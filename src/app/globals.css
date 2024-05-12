@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Define scrollbar styles */
+::-webkit-scrollbar {
+  width: 5px; /* width of the scrollbar */
+}
+
+/* Track (the background of the scrollbar) */
+::-webkit-scrollbar-track {
+  background: #1E1E1E; /* color of the track */
+}
+
+/* Handle (the draggable part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+  background: #e84644; /* color of the handle */
+  border-radius: 4px; /* roundness of the handle */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #bf3030; /* color of the handle on hover */
+}

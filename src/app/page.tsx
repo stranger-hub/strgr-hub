@@ -1,10 +1,13 @@
-import Image from "next/image";
+import Countries from "@/Components/Desktop/Countries";
+import Navbar from "@/Components/Desktop/Navbar";
 
 export default function Home() {
   return (
     <main>
-      <button className="btn btn-primary">Hello daisyUI!</button>
-      <div className="p-2 text-primary-red">knsdksjndksd</div>
+      <Navbar />
+      <div className="px-[60px]">
+        <Countries />
+      </div>
     </main>
   );
 }
