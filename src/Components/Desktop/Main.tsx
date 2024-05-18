@@ -7,7 +7,7 @@ export default function Main() {
 
   return (
     <div className="flex gap-10 h-[80vh]">
-      <p className="w-[60%]">Video will be displayed here</p>
+      <p className={open ? "w-[60%]" : "w-[100%]"}>Video will be displayed here</p>
       <CollapseComponent open={open} setIsOpen={setIsOpen} />
     </div>
   );

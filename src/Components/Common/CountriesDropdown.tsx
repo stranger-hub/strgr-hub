@@ -12,12 +12,28 @@ export default function CountriesDropdown() {
       >
         <BsInfoCircleFill />
       </div>
+      {/* <select className="select select-bordered w-full max-w-xs bg-primary">
+        <option disabled selected className="bg-base-200">
+          Select country
+        </option>
+        {Object.entries(countries).map(([countryCode, countryInfo]) => (
+          <option className="bg-base-200 hover:bg-base-100 flex flex-row items-center gap-5">
+            <Image
+              alt="United States"
+              src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${countryCode}.svg`}
+              width={18}
+              height={12}
+            />
+            <p>{countryInfo.name}</p>
+          </option>
+        ))}
+      </select> */}
       <div className="dropdown dropdown-bottom dropdown-end">
         <div role="button" tabIndex={0} className="btn m-1 bg-primary">
           Select country
         </div>
         <ul
-            tabIndex={0}
+          tabIndex={0}
           className="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-[200px] h-[60vh] overflow-auto flex-nowrap"
         >
           {Object.entries(countries).map(([countryCode, countryInfo]) => (

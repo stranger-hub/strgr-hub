@@ -10,7 +10,7 @@ export default function CollapseComponent({
   setIsOpen: any;
 }) {
   return (
-    <div className="flex w-[40%]">
+    <div className={`flex ${open && "w-[40%]"}`}>
       <div
         className="bg-base-200 px-2 pt-4 rounded-s-lg cursor-pointer"
         onClick={() => setIsOpen((prev: boolean) => !prev)}
