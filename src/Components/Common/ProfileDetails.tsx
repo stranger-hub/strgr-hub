@@ -39,9 +39,9 @@ export default function ProfileDetails() {
           <BsPencilSquare className={editButtonClass} />
         </div>
       </div>
-      <div className="mt-10">
+      <div className="mt-14">
         <p className="font-bold">
-          Update your <span className="text-primary">interests</span>
+          Update your top <span className="text-primary">3 interests</span>
         </p>
         <div className="mt-5 flex justify-center">
           <Interests />
