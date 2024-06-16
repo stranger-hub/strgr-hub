@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import interests from "@/utils/interests";
+import interests from "@/data/interests";
 
 interface Interests {
   interest: string;

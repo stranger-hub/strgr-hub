@@ -1,9 +1,11 @@
+import { auth } from "@/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { BsPersonCircle } from "react-icons/bs";
+import LogoutBtn from "./LogoutBtn";
 
-export default function Navbar() {
-  const user = { name: "stranger" };
+const Navbar = async () => {
+  const session = await auth();  
 
   return (
     <div className="navbar bg-base-200 h-[10vh] px-[60px] py-[20px]">
@@ -12,9 +14,17 @@ export default function Navbar() {
       </Link>
       <div className="dropdown dropdown-end">
         <div className="flex items-center gap-3">
-          <p>Hello {user?.name}</p>
+          <p>Hello {session?.user?.name ? session?.user?.name?.split(" ")[0] : "stranger"}</p>
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-            <BsPersonCircle size={30} color="#E84644" />
+            {session?.user?.image ? 
+                <Image height={70} width={70} alt="profile pic" className="mask mask-circle" src={session?.user?.image} />
+              : 
+                <div className="avatar placeholder">
+                  <div className="bg-base-100 text-neutral-content w-10 rounded-full capitalize">
+                    <span className="text-base">{session?.user?.name?.toUpperCase()?.split(" ").map((name: string) => name[0]).join("")}</span>
+                  </div>
+                </div>
+            }
           </div>
         </div>
         <ul
@@ -31,10 +41,12 @@ export default function Navbar() {
             <a>Settings</a>
           </li>
           <li>
-            <a>Logout</a>
+            <LogoutBtn />
           </li>
         </ul>
       </div>
     </div>
   );
 }
+
+export default Navbar;
