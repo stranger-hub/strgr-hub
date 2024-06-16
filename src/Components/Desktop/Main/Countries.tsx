@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import CountriesCarousel from "./CountriesCarousel";
-import CountriesDropdown from "../Common/CountriesDropdown";
+import CountriesDropdown from "../../Common/CountriesDropdown";
 
 export default function Countries() {
   return (

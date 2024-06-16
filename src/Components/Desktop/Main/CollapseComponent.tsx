@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
 import CollapseChat from "./CollapseChat";
 

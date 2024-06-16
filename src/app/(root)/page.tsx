@@ -1,5 +1,5 @@
-import Countries from "@/Components/Desktop/Countries";
-import Main from "@/Components/Desktop/Main";
+import Countries from "@/Components/Desktop/Main/Countries";
+import Main from "@/Components/Desktop/Main/Main";
 import { auth } from "@/auth";
 
 export default async function Home() {
@@ -7,7 +7,6 @@ export default async function Home() {
   return (
     <main>
       <div className="px-[60px]">
-        {JSON.stringify(session)}
         <Countries />
         <Main />
       </div>

@@ -14,7 +14,7 @@ enum UserRole {
 
 enum RoomStatus {
   WAITING
-  ACTIVE
+  CHATTING
 }
  
 model User {
