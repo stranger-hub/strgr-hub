@@ -1,6 +1,6 @@
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import React, { useState } from "react";
-import { BsEmojiSmile, BsSendArrowUp } from "react-icons/bs";
+import { BsEmojiSmileFill, BsSendArrowUpFill } from "react-icons/bs";
 
 function ChatHeader({
   firstName,
@@ -116,12 +116,12 @@ function ChatInput({
           }}
         />
       </div>
-      <BsEmojiSmile
-        className="text-primary cursor-pointer"
+      <BsEmojiSmileFill
+        className="text-white cursor-pointer"
         size={20}
         onClick={() => setEmojiOpen((prev: boolean) => !prev)}
       />
-      <BsSendArrowUp className="text-primary cursor-pointer" size={20} />
+      <BsSendArrowUpFill className="text-white cursor-pointer" size={20} />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
 import Image from "next/image";
 import Link from "next/link";
-import { BsPersonCircle } from "react-icons/bs";
 import LogoutBtn from "./LogoutBtn";
 
 const Navbar = async () => {
