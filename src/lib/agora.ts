@@ -1,7 +1,7 @@
 import AgoraRTM from "agora-rtm-sdk";
 
 class Agora {
-    async connectToAgora({ user, room }: any) {
+    async connectToAgora({ user, room, setMessages }: any) {
         const client = AgoraRTM.createInstance(process.env.NEXT_PUBLIC_AGORA_APP_ID as string);
 
         await client.login({
@@ -10,9 +10,23 @@ class Agora {
 
         const channel = await client.createChannel(room._id);
         await channel.join();
-        channel.on("ChannelMessage", (message, peerId) => {
-            console.log(message, peerId);
+        channel.on("ChannelMessage", (message, userId) => {
+            console.log(message, userId);
+            setMessages((prev: any[]) => [
+                ...prev,
+                {
+                    userId,
+                    message: message.text,
+                }
+            ])
         });
+        // push your messages in this state, to differentiate, just compare userId with your userId
+
+        // send message logic
+        await channel.sendMessage({
+            text: "some message"
+        })
+        return channel;
     }
 
     // public static signalingEngine: any;
