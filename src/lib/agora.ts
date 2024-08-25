@@ -1,7 +1,9 @@
 import AgoraRTM from "agora-rtm-sdk";
+import AgoraRTC from "agora-rtc-sdk-ng";
+
 
 class Agora {
-    async connectToAgora({ user, room, setMessages }: any) {
+    async connectToAgoraRtm({ user, room, setMessages }: any) {
         const client = AgoraRTM.createInstance(process.env.NEXT_PUBLIC_AGORA_APP_ID as string);
 
         await client.login({
@@ -29,6 +31,30 @@ class Agora {
         return channel;
     }
 
+    async connectToAgoraRtc({ userId, roomId, onVideoConnect, onWebCamStart }: { userId: string, roomId: string, onVideoConnect: any, onWebCamStart: any }) {
+        const client = AgoraRTC.createClient({
+            mode: "rtc",
+            codec: "vp8",
+        });
+        await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID as string, roomId, null, userId);
+        client.on("user-published", (themUser, mediaType) => {
+            client.subscribe(themUser, mediaType).then(() => {
+                if(mediaType === "video") {
+                    onVideoConnect(themUser);
+                }
+
+                if(mediaType === "audio") {
+                    themUser.audioTrack?.play();
+                }
+            })
+        });
+
+        const tracks = await AgoraRTC.createMicrophoneAndCameraTracks();
+        onWebCamStart(tracks[1]);
+        await client.publish(tracks);
+
+        return { tracks, client };
+    }
     // public static signalingEngine: any;
 
     // public async joinChannel({ channelName }: { channelName: string }) {
