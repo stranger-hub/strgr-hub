@@ -1,4 +1,5 @@
 import EmojiPicker, { Theme } from "emoji-picker-react";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { BsEmojiSmileFill, BsSendArrowUpFill } from "react-icons/bs";
 
@@ -23,60 +24,35 @@ function ChatHeader({
   );
 }
 
-function Chat() {
+function Chat({
+  messages,
+}: {
+  messages: { userId: string; message: string }[];
+}) {
+  const session = useSession();
+  const userId = session?.data?.user?.id;
   return (
     <div className="text-xs h-[64vh] overflow-auto">
       {/* incoming chats */}
-      <div className="mt-5">
-        <div className="chat chat-start text-black">
-          <div className="chat-bubble bg-white text-black p-3 mb-1">
-            What kind of nonsense 🤓🤓🤓🤓🤓👀 is this What kind of nonsense is
-            this What kind of nonsense is this What kind of nonsense is this
-            What kind of nonsense is thisWhat kind of nonsense is this
+      {messages.map((message, index) =>
+        userId !== message.userId ? (
+          <div key={index + message.message} className="mt-5">
+            <div className="chat chat-start text-black">
+              <div className="chat-bubble bg-white text-black p-3 mb-1">
+                {message.message}
+              </div>
+            </div>
           </div>
-          <div className="chat-bubble bg-white p-3 mb-1">
-            What kind of nonsense is this
+        ) : (
+          <div key={index + message.message} className="mt-5">
+            <div className="chat chat-end">
+              <div className="chat-bubble chat-bubble-primary text-white p-3 mb-1">
+                {message.message}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      {/* outgoing chats */}
-      <div className="mt-5">
-        <div className="chat chat-end">
-          <div className="chat-bubble chat-bubble-primary text-white p-3 mb-1">
-            What kind of nonsense 🤓🤓🤓🤓🤓👀 is this What kind of nonsense is
-            this What kind of nonsense is this What kind of nonsense is this
-            What kind of nonsense is thisWhat kind of nonsense is this
-          </div>
-          <div className="chat-bubble chat-bubble-primary text-white p-3 mb-1">
-            What kind of nonsense is this
-          </div>
-        </div>
-      </div>
-      <div className="mt-5">
-        <div className="chat chat-start text-black">
-          <div className="chat-bubble bg-white text-black p-3 mb-1">
-            What kind of nonsense 🤓🤓🤓🤓🤓👀 is this What kind of nonsense is
-            this What kind of nonsense is this What kind of nonsense is this
-            What kind of nonsense is thisWhat kind of nonsense is this
-          </div>
-          <div className="chat-bubble bg-white p-3 mb-1">
-            What kind of nonsense is this
-          </div>
-        </div>
-      </div>
-      {/* outgoing chats */}
-      <div className="mt-5">
-        <div className="chat chat-end">
-          <div className="chat-bubble chat-bubble-primary text-white p-3 mb-1">
-            What kind of nonsense 🤓🤓🤓🤓🤓👀 is this What kind of nonsense is
-            this What kind of nonsense is this What kind of nonsense is this
-            What kind of nonsense is thisWhat kind of nonsense is this
-          </div>
-          <div className="chat-bubble chat-bubble-primary text-white p-3 mb-1">
-            What kind of nonsense is this
-          </div>
-        </div>
-      </div>
+        )
+      )}
     </div>
   );
 }
@@ -126,13 +102,17 @@ function ChatInput({
   );
 }
 
-export default function CollapseChat() {
+export default function CollapseChat({
+  messages,
+}: {
+  messages: { userId: string; message: string }[];
+}) {
   const [emojiOpen, setEmojiOpen] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
   return (
     <div className="w-[100%]">
       <ChatHeader firstName={"Jayendra"} lastName={"Awasthi"} />
-      <Chat />
+      <Chat messages={messages} />
       <ChatInput
         emojiOpen={emojiOpen}
         setEmojiOpen={setEmojiOpen}

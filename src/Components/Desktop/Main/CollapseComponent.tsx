@@ -4,9 +4,11 @@ import CollapseChat from "./CollapseChat";
 export default function CollapseComponent({
   open,
   setIsOpen,
+  messages,
 }: {
   open: any;
   setIsOpen: any;
+  messages: { userId: string, message: string }[];
 }) {
   return (
     <div className={`flex ${open && "w-[40%]"}`}>
@@ -22,7 +24,7 @@ export default function CollapseComponent({
       </div>
       {open && (
         <div className={`w-[100%]`}>
-          <CollapseChat />
+          <CollapseChat messages={messages} />
         </div>
       )}
     </div>

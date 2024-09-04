@@ -3,14 +3,23 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 
 
 class Agora {
-    async connectToAgoraRtm({ user, room, setMessages }: any) {
-        const client = AgoraRTM.createInstance(process.env.NEXT_PUBLIC_AGORA_APP_ID as string);
+    private static agoraInstance: Agora;
+    
+    static getInstance(): Agora {
+        if(!this.agoraInstance) {
+            Agora.agoraInstance = new Agora();
+        }
 
+        return Agora.agoraInstance;
+    }
+    
+    async connectToAgoraRtm(userId: string, roomId: string, setMessages: any) {
+        const client = AgoraRTM.createInstance(process.env.NEXT_PUBLIC_AGORA_APP_ID as string);
         await client.login({
-            uid: user._id
+            uid: userId
         });
 
-        const channel = await client.createChannel(room._id);
+        const channel = await client.createChannel(roomId);
         await channel.join();
         channel.on("ChannelMessage", (message, userId) => {
             console.log(message, userId);
@@ -55,42 +64,7 @@ class Agora {
 
         return { tracks, client };
     }
-    // public static signalingEngine: any;
-
-    // public async joinChannel({ channelName }: { channelName: string }) {
-    //     try {
-    //         const subscribeOptions = {
-    //           withMessage: true,
-    //           withPresence: true, 
-    //           withMetadata: true,
-    //           withLock: true,
-    //         };
-    //         await Agora.signalingEngine.subscribe(channelName, subscribeOptions);
-    //     } catch (error) {
-    //         console.log(error, "error joining channel");
-    //         console.log("95f415097d6d4be5bc70ec5ae14f8d24");
-            
-    //     }
-    // }
-
-    // public static async connectToAgora({ user }: any) {
-    //     this.signalingEngine = new AgoraRTM.RTM(process.env.NEXT_PUBLIC_AGORA_APP_ID as string, user.id, { token: "" });
-    //     try { 
-    //         await Agora.signalingEngine.login();
-    //     } catch (err) {
-    //         console.log({ err }, "error on login");
-    //     }
-    // }
-    
-    // public static async logout() {
-    //     if(this.signalingEngine) {
-    //         try {
-    //             this.signalingEngine.logout();
-    //         } catch (err) {
-    //             console.log({ err }, "error on logout");
-    //         }
-    //     }
-    // }
 }
 
-export default Agora;
+const agoraInstance: Agora = Agora.getInstance();
+export default agoraInstance;

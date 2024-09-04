@@ -1,6 +1,4 @@
-import { useSession } from "next-auth/react";
 import React, { useState } from "react";
-import toast from "react-hot-toast";
 import {
   BsCameraVideoFill,
   BsCameraVideoOffFill,
@@ -10,28 +8,9 @@ import {
   BsPersonFillAdd,
 } from "react-icons/bs";
 
-export default function VideoSection({ room, setRoom }: any) {
+export default function VideoSection({ room, getRoom }: any) {
   const [cameraOn, setCameraOn] = useState(false);
   const [micOn, setMicOn] = useState(false);
-  const session = useSession();
-
-  const getRoom = async () => {
-    const res = await fetch("/api/rooms?userId=" + session.data?.user?.id);
-    const result = await res.json();
-    if(result.success) {
-        if(result?.data?.roomId) {
-        }
-         else {
-            const createRes = await fetch("/api/rooms", {
-                method: "POST",
-            });
-            const createResult = await createRes.json();
-            console.log("createResult", createResult);
-        }
-    } else {
-        toast.error("something went wrong, please reload and try again");
-    }
-  }
 
   return (
     <div className="relative">
