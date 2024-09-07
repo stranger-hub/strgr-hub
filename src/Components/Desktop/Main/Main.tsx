@@ -1,28 +1,47 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import CollapseComponent from "./CollapseComponent";
 import VideoSection from "./VideoSection";
 import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import agoraInstance from "@/lib/agora";
+import { RtmChannel } from "agora-rtm-sdk";
+import { ICameraVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
 
 export default function Main() {
   const [open, setIsOpen] = useState(true);
   const [room, setRoom] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [cameraOn, setCameraOn] = useState(false);
+  const [micOn, setMicOn] = useState(false);
+  const [themVideo, setThemVideo] = useState<IRemoteVideoTrack>();
+  const [myVideo, setMyVideo] = useState<ICameraVideoTrack>();
+
+  const channelRef = useRef<RtmChannel>();
 
   const session = useSession();
 
   const joinRoom = async () => {
-    try {
-      if(session.data?.user?.id) {
-        agoraInstance.connectToAgoraRtm(session.data.user.id, "123", setMessages);
+    // try {
+      const userId = session.data?.user?.id;
+      if(userId) {
+        const rtcToken = await agoraInstance.getRtcToken("123", userId);
+        const rtmToken = await agoraInstance.getRtmToken(userId);
+        channelRef.current = await agoraInstance.connectToAgoraRtm(userId, "123", rtmToken, setMessages);
+        await agoraInstance.connectToAgoraRtc(
+          userId, 
+          "123",
+          rtcToken,
+          (themVideo: IRemoteVideoTrack) => setThemVideo(themVideo), 
+          (myVideo: ICameraVideoTrack) => setMyVideo(myVideo)
+        );
       } else {
         toast.error("user not logged in properly, please re-login");
       }
-    } catch {
-      toast.error("error joining room, please try again later");
-    }
+    // } catch(e: any) {
+    //   console.log(e.message);
+    //   toast.error("error joining room, please try again later");
+    // }
   }
 
   const getRoom = async () => {
@@ -48,9 +67,9 @@ export default function Main() {
       <Toaster />
       <div className="flex gap-10 h-[80vh]">
         <div className={open ? "w-[60%]" : "w-[100%]"}>
-          <VideoSection room={room} getRoom={getRoom} />
+          <VideoSection getRoom={joinRoom} myVideo={myVideo} themVideo={themVideo} />
         </div>
-        <CollapseComponent open={open} setIsOpen={setIsOpen} messages={messages} />
+        <CollapseComponent open={open} setIsOpen={setIsOpen} messages={messages} channel={channelRef} setMessages={setMessages} />
       </div>
     </>
   );

@@ -37,7 +37,7 @@ export default function CountriesDropdown() {
           className="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-[200px] h-[60vh] overflow-auto flex-nowrap"
         >
           {Object.entries(countries).map(([countryCode, countryInfo]) => (
-            <li>
+            <li key={countryCode}>
               <div className="flex flex-row items-center gap-5">
                 <Image
                   alt="United States"

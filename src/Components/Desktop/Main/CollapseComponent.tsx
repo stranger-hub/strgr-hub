@@ -1,14 +1,21 @@
+"use client";
 import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
 import CollapseChat from "./CollapseChat";
+import { RtmChannel } from "agora-rtm-sdk";
+import { MutableRefObject } from "react";
 
 export default function CollapseComponent({
   open,
   setIsOpen,
   messages,
+  channel,
+  setMessages,
 }: {
   open: any;
   setIsOpen: any;
   messages: { userId: string, message: string }[];
+  channel: MutableRefObject<RtmChannel | undefined>;
+  setMessages: any;
 }) {
   return (
     <div className={`flex ${open && "w-[40%]"}`}>
@@ -24,7 +31,7 @@ export default function CollapseComponent({
       </div>
       {open && (
         <div className={`w-[100%]`}>
-          <CollapseChat messages={messages} />
+          <CollapseChat messages={messages} channel={channel} setMessages={setMessages} />
         </div>
       )}
     </div>

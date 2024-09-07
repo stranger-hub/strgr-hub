@@ -1,6 +1,9 @@
+"use client";
+import { RtmChannel } from "agora-rtm-sdk";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { MutableRefObject, useState } from "react";
+import { toast } from "react-hot-toast";
 import { BsEmojiSmileFill, BsSendArrowUpFill } from "react-icons/bs";
 
 function ChatHeader({
@@ -25,27 +28,27 @@ function ChatHeader({
 }
 
 function Chat({
+  userId,
   messages,
 }: {
+  userId: string;
   messages: { userId: string; message: string }[];
 }) {
-  const session = useSession();
-  const userId = session?.data?.user?.id;
   return (
     <div className="text-xs h-[64vh] overflow-auto">
       {/* incoming chats */}
       {messages.map((message, index) =>
         userId !== message.userId ? (
-          <div key={index + message.message} className="mt-5">
-            <div className="chat chat-start text-black">
+          <div key={index + message.message}>
+            <div className="chat chat-start text-black text-wrap">
               <div className="chat-bubble bg-white text-black p-3 mb-1">
                 {message.message}
               </div>
             </div>
           </div>
         ) : (
-          <div key={index + message.message} className="mt-5">
-            <div className="chat chat-end">
+          <div key={index + message.message}>
+            <div className="chat chat-end text-wrap">
               <div className="chat-bubble chat-bubble-primary text-white p-3 mb-1">
                 {message.message}
               </div>
@@ -58,18 +61,23 @@ function Chat({
 }
 
 function ChatInput({
-  emojiOpen,
-  setEmojiOpen,
-  input,
-  setInput,
+  handleMessageSend
 }: {
-  emojiOpen: any;
-  setEmojiOpen: any;
-  input: any;
-  setInput: any;
+  handleMessageSend: (text: string) => Promise<void>;
 }) {
+  const [emojiOpen, setEmojiOpen] = useState<boolean>(false);
+  const [input, setInput] = useState<string>("");
+
+  async function handleMessageSubmit(event: any) {
+    event.preventDefault();
+    if(input) {
+      await handleMessageSend(input);
+      setInput("");
+    }
+  }
+
   return (
-    <div className="h-[8vh] bg-base-200 flex items-center gap-5">
+    <form className="h-[8vh] bg-base-200 flex items-center gap-5" onSubmit={handleMessageSubmit}>
       <input
         type="text"
         className="input input-sm w-[80%] rounded text-sm"
@@ -93,31 +101,54 @@ function ChatInput({
         />
       </div>
       <BsEmojiSmileFill
-        className="text-white cursor-pointer"
+        className="text-white hover:text-primary cursor-pointer"
         size={20}
         onClick={() => setEmojiOpen((prev: boolean) => !prev)}
       />
-      <BsSendArrowUpFill className="text-white cursor-pointer" size={20} />
-    </div>
+      <button type="submit">
+        <BsSendArrowUpFill className="text-white hover:text-primary" size={20} />
+      </button>
+    </form>
   );
 }
 
 export default function CollapseChat({
   messages,
+  channel,
+  setMessages,
 }: {
   messages: { userId: string; message: string }[];
+  channel: MutableRefObject<RtmChannel | undefined>,
+  setMessages: any,
 }) {
-  const [emojiOpen, setEmojiOpen] = useState<boolean>(false);
-  const [input, setInput] = useState<string>("");
+  const session = useSession();
+  const userId = session.data?.user?.id as string;
+
+  async function handleMessageSend(text: string) {
+    try {
+      if(!channel.current) {
+        throw new Error("no channel found");
+      }
+      await channel.current.sendMessage({ text });
+      setMessages((prev: any[]) => [
+        ...prev,
+        {
+            userId,
+            message: text,
+        }
+      ]);
+    } catch(e: any) {
+      console.log(e.message);
+      toast.error("error sending message!");
+    }
+  }
+
   return (
     <div className="w-[100%]">
       <ChatHeader firstName={"Jayendra"} lastName={"Awasthi"} />
-      <Chat messages={messages} />
+      <Chat userId={userId} messages={messages} />
       <ChatInput
-        emojiOpen={emojiOpen}
-        setEmojiOpen={setEmojiOpen}
-        input={input}
-        setInput={setInput}
+        handleMessageSend={handleMessageSend}
       />
     </div>
   );

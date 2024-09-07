@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { ICameraVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BsCameraVideoFill,
   BsCameraVideoOffFill,
@@ -8,20 +9,17 @@ import {
   BsPersonFillAdd,
 } from "react-icons/bs";
 
-export default function VideoSection({ room, getRoom }: any) {
-  const [cameraOn, setCameraOn] = useState(false);
-  const [micOn, setMicOn] = useState(false);
-
+export default function VideoSection({ getRoom, myVideo, themVideo }: any) {
   return (
     <div className="relative">
-      <div className="h-[200px] w-[300px] absolute bottom-0 right-0 bg-base-200 border border-primary rounded-lg">
-        Your video goes here
+      <div className="h-[200px] w-[300px] absolute bottom-0 right-0 bg-base-200 border outer border-primary rounded-lg z-1000">
+        <VideoPlayer videoTrack={themVideo} />
       </div>
-      <div className="bg-base-200 rounded-lg h-[65vh]">
-        othervideo goes here
+      <div className="bg-base-200 rounded-lg h-[65vh] z-999">
+        <VideoPlayer videoTrack={myVideo} />
       </div>
       <div className="flex gap-3 mt-5">
-        <ActionButton
+        {/* <ActionButton
           icon={
             cameraOn ? (
               <BsCameraVideoFill size={25} />
@@ -29,14 +27,14 @@ export default function VideoSection({ room, getRoom }: any) {
               <BsCameraVideoOffFill size={25} />
             )
           }
-          func={() => setCameraOn((prev) => !prev)}
+          func={() => setCameraOn((prev: boolean) => !prev)}
           tooltipData="open/close camera"
         />
         <ActionButton
           icon={micOn ? <BsMicFill size={25} /> : <BsMicMuteFill size={25} />}
-          func={() => setMicOn((prev) => !prev)}
+          func={() => setMicOn((prev: boolean) => !prev)}
           tooltipData="open/close mic"
-        />
+        /> */}
         <ActionButton
           icon={<BsFastForwardCircleFill size={25} />}
           func={() => getRoom()}
@@ -50,6 +48,28 @@ export default function VideoSection({ room, getRoom }: any) {
       </div>
     </div>
   );
+}
+
+function VideoPlayer({
+  videoTrack,
+}: {
+  videoTrack: IRemoteVideoTrack | ICameraVideoTrack;
+}) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const playerRef = ref.current;
+    if(!videoTrack) return;
+    if(!playerRef) return;
+
+    videoTrack.play(playerRef);
+
+    return () => {
+      videoTrack.stop();
+    };
+  }, [videoTrack]);
+
+  return <div ref={ref} style={{ height: "100%", width: "100%", zIndex: "inherit" }}></div>;
 }
 
 function ActionButton({ icon, func, tooltipData }: any) {

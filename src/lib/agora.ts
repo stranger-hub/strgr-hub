@@ -1,6 +1,5 @@
-import AgoraRTM from "agora-rtm-sdk";
-import AgoraRTC from "agora-rtc-sdk-ng";
-
+const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID!;
+const appCertificate = process.env.NEXT_PUBLIC_AGORA_APP_CERT!;
 
 class Agora {
     private static agoraInstance: Agora;
@@ -12,11 +11,51 @@ class Agora {
 
         return Agora.agoraInstance;
     }
+
+    async getRtcToken(roomId: string, userId: string) {
+        const { RtcRole, RtcTokenBuilder } = await import("agora-access-token");
+        const channelName = roomId;
+        const account = userId;
+        const role = RtcRole.PUBLISHER;
+        const expirationTimeInSeconds = 3600;
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
+
+        const token = RtcTokenBuilder.buildTokenWithAccount(
+            appId,
+            appCertificate,
+            channelName,
+            account,
+            role,
+            privilegeExpiredTs
+        );
+
+        return token;
+    }
+
+    async getRtmToken(userId: string) {
+        const { RtmTokenBuilder, RtmRole } = await import("agora-access-token");
+        const account = userId;
+        const role = RtmRole.Rtm_User;
+        const expirationTimeInSeconds = 3600;
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
+        const token = RtmTokenBuilder.buildToken(
+            appId,
+            appCertificate,
+            account,
+            role,
+            privilegeExpiredTs
+        )
+        return token;
+    }
     
-    async connectToAgoraRtm(userId: string, roomId: string, setMessages: any) {
+    async connectToAgoraRtm(userId: string, roomId: string, token: string, setMessages: any) {
+        const { default: AgoraRTM } = await import("agora-rtm-sdk");
         const client = AgoraRTM.createInstance(process.env.NEXT_PUBLIC_AGORA_APP_ID as string);
         await client.login({
-            uid: userId
+            uid: userId,
+            token,
         });
 
         const channel = await client.createChannel(roomId);
@@ -29,32 +68,27 @@ class Agora {
                     userId,
                     message: message.text,
                 }
-            ])
+            ]);
         });
-        // push your messages in this state, to differentiate, just compare userId with your userId
-
-        // send message logic
-        await channel.sendMessage({
-            text: "some message"
-        })
         return channel;
     }
 
-    async connectToAgoraRtc({ userId, roomId, onVideoConnect, onWebCamStart }: { userId: string, roomId: string, onVideoConnect: any, onWebCamStart: any }) {
+    async connectToAgoraRtc(userId: string, roomId: string, token: string, onVideoConnect: any, onWebCamStart: any) {
+        const { default: AgoraRTC } = await import("agora-rtc-sdk-ng");
         const client = AgoraRTC.createClient({
             mode: "rtc",
             codec: "vp8",
         });
-        await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID as string, roomId, null, userId);
+        await client.join(process.env.NEXT_PUBLIC_AGORA_APP_ID as string, roomId, token, userId);
         client.on("user-published", (themUser, mediaType) => {
             client.subscribe(themUser, mediaType).then(() => {
                 if(mediaType === "video") {
-                    onVideoConnect(themUser);
+                    onVideoConnect(themUser.videoTrack);
                 }
 
-                if(mediaType === "audio") {
-                    themUser.audioTrack?.play();
-                }
+                // if(mediaType === "audio") {
+                //     themUser.audioTrack?.play();
+                // }
             })
         });
 
