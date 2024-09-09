@@ -2,27 +2,34 @@
 import { RtmChannel } from "agora-rtm-sdk";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import React, { MutableRefObject, useState } from "react";
 import { toast } from "react-hot-toast";
 import { BsEmojiSmileFill, BsSendArrowUpFill } from "react-icons/bs";
 
 function ChatHeader({
-  firstName,
-  lastName,
+  themUser
 }: {
-  firstName: string;
-  lastName: string;
+  themUser: { name: string, image: string }
 }) {
   return (
     <div className="bg-base-200 p-3 flex items-center gap-4 h-[8vh]">
       <div className="avatar online placeholder">
         {/* use class placeholder when DP not available */}
         <div className="bg-base-100 text-neutral-content w-10 rounded-full capitalize">
-          <span className="text-base">{firstName[0] + lastName[0]}</span>
-          {/* <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" /> */}
+          <span className="text-base">{themUser?.name}</span>
+          {themUser?.image ?
+            <Image height={70} width={70} alt="profile pic" className="mask mask-circle" src={themUser?.image} />
+            :
+            <div className="avatar placeholder">
+              <div className="bg-base-100 text-neutral-content w-10 rounded-full capitalize">
+                <span className="text-base">{themUser?.name?.toUpperCase()?.split(" ").map((name: string) => name[0]).join("")}</span>
+              </div>
+            </div>
+          }
         </div>
       </div>
-      <p className="text-sm">{firstName + " " + lastName}</p>
+      <p className="text-sm">{themUser?.name}</p>
     </div>
   );
 }
@@ -70,7 +77,7 @@ function ChatInput({
 
   async function handleMessageSubmit(event: any) {
     event.preventDefault();
-    if(input) {
+    if (input) {
       await handleMessageSend(input);
       setInput("");
     }
@@ -116,28 +123,30 @@ export default function CollapseChat({
   messages,
   channel,
   setMessages,
+  themUser
 }: {
   messages: { userId: string; message: string }[];
   channel: MutableRefObject<RtmChannel | undefined>,
   setMessages: any,
+  themUser: { name: string, image: string }
 }) {
   const session = useSession();
   const userId = session.data?.user?.id as string;
 
   async function handleMessageSend(text: string) {
     try {
-      if(!channel.current) {
+      if (!channel.current) {
         throw new Error("no channel found");
       }
       await channel.current.sendMessage({ text });
       setMessages((prev: any[]) => [
         ...prev,
         {
-            userId,
-            message: text,
+          userId,
+          message: text,
         }
       ]);
-    } catch(e: any) {
+    } catch (e: any) {
       console.log(e.message);
       toast.error("error sending message!");
     }
@@ -145,7 +154,7 @@ export default function CollapseChat({
 
   return (
     <div className="w-[100%]">
-      <ChatHeader firstName={"Jayendra"} lastName={"Awasthi"} />
+      <ChatHeader themUser={themUser} />
       <Chat userId={userId} messages={messages} />
       <ChatInput
         handleMessageSend={handleMessageSend}

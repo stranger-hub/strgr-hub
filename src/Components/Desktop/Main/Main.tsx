@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CollapseComponent from "./CollapseComponent";
 import VideoSection from "./VideoSection";
 import toast, { Toaster } from "react-hot-toast";
@@ -16,18 +16,23 @@ export default function Main() {
   const [micOn, setMicOn] = useState(false);
   const [themVideo, setThemVideo] = useState<IRemoteVideoTrack>();
   const [myVideo, setMyVideo] = useState<ICameraVideoTrack>();
+  const [themUser, setThemUser] = useState<any>();
+
+  useEffect(() => {
+    console.log("themUser", themUser);
+  }, [themUser]);
 
   const channelRef = useRef<RtmChannel>();
 
   const session = useSession();
 
   const joinRoom = async () => {
-    // try {
+    try {
       const userId = session.data?.user?.id;
       if(userId) {
         const rtcToken = await agoraInstance.getRtcToken("123", userId);
         const rtmToken = await agoraInstance.getRtmToken(userId);
-        channelRef.current = await agoraInstance.connectToAgoraRtm(userId, "123", rtmToken, setMessages);
+        channelRef.current = await agoraInstance.connectToAgoraRtm(userId, "123", rtmToken, setMessages, setThemUser);
         await agoraInstance.connectToAgoraRtc(
           userId, 
           "123",
@@ -38,10 +43,10 @@ export default function Main() {
       } else {
         toast.error("user not logged in properly, please re-login");
       }
-    // } catch(e: any) {
-    //   console.log(e.message);
-    //   toast.error("error joining room, please try again later");
-    // }
+    } catch(e: any) {
+      console.log(e.message);
+      toast.error("error joining room, please try again later");
+    }
   }
 
   const getRoom = async () => {
@@ -69,7 +74,7 @@ export default function Main() {
         <div className={open ? "w-[60%]" : "w-[100%]"}>
           <VideoSection getRoom={joinRoom} myVideo={myVideo} themVideo={themVideo} />
         </div>
-        <CollapseComponent open={open} setIsOpen={setIsOpen} messages={messages} channel={channelRef} setMessages={setMessages} />
+        <CollapseComponent open={open} setIsOpen={setIsOpen} messages={messages} channel={channelRef} setMessages={setMessages} themUser={themUser} />
       </div>
     </>
   );

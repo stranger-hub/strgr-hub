@@ -10,12 +10,14 @@ export default function CollapseComponent({
   messages,
   channel,
   setMessages,
+  themUser,
 }: {
   open: any;
   setIsOpen: any;
   messages: { userId: string, message: string }[];
   channel: MutableRefObject<RtmChannel | undefined>;
   setMessages: any;
+  themUser: { name: string, image: string }
 }) {
   return (
     <div className={`flex ${open && "w-[40%]"}`}>
@@ -31,7 +33,7 @@ export default function CollapseComponent({
       </div>
       {open && (
         <div className={`w-[100%]`}>
-          <CollapseChat messages={messages} channel={channel} setMessages={setMessages} />
+          <CollapseChat messages={messages} channel={channel} setMessages={setMessages} themUser={themUser} />
         </div>
       )}
     </div>

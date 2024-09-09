@@ -1,3 +1,5 @@
+import { getUserById } from "@/data/user";
+
 const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID!;
 const appCertificate = process.env.NEXT_PUBLIC_AGORA_APP_CERT!;
 
@@ -50,7 +52,7 @@ class Agora {
         return token;
     }
     
-    async connectToAgoraRtm(userId: string, roomId: string, token: string, setMessages: any) {
+    async connectToAgoraRtm(userId: string, roomId: string, token: string, setMessages: any, setThemUser: any) {
         const { default: AgoraRTM } = await import("agora-rtm-sdk");
         const client = AgoraRTM.createInstance(process.env.NEXT_PUBLIC_AGORA_APP_ID as string);
         await client.login({
@@ -61,7 +63,6 @@ class Agora {
         const channel = await client.createChannel(roomId);
         await channel.join();
         channel.on("ChannelMessage", (message, userId) => {
-            console.log(message, userId);
             setMessages((prev: any[]) => [
                 ...prev,
                 {
@@ -70,6 +71,15 @@ class Agora {
                 }
             ]);
         });
+        channel.on("MemberJoined", async (memberId: string) => {
+            const user = await getUserById(memberId);
+            setThemUser(user);
+            console.log(memberId + "joined");
+        });
+        channel.on("MemberLeft", (memberId: string) => {
+            setThemUser(null);
+            console.log(memberId + "left");
+        })
         return channel;
     }
 
@@ -90,6 +100,13 @@ class Agora {
                 //     themUser.audioTrack?.play();
                 // }
             })
+        });
+
+        client.on("user-joined", (user) => {
+            console.log("user joined", JSON.stringify(user));
+        });
+        client.on("user-left", () => {
+            console.log("user left");
         });
 
         const tracks = await AgoraRTC.createMicrophoneAndCameraTracks();
