@@ -4,12 +4,16 @@ import Link from "next/link";
 import LogoutBtn from "./LogoutBtn";
 
 const Navbar = async () => {
-  const session = await auth();  
-
+  const session = await auth();
+  const location = await (await fetch('https://ipapi.co/json/')).json();
+  console.log(location);
+  
+  
   return (
     <div className="navbar bg-base-200 h-[10vh] px-[60px] py-[20px]">
       <Link href={"/"} className="flex-1">
         <Image src="/logo.png" alt="logo" width={200} height={200} />
+        <p>{location.country_name}</p>
       </Link>
       <div className="dropdown dropdown-end">
         <div className="flex items-center gap-3">

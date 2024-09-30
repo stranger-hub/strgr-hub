@@ -1,10 +1,12 @@
 import { getUserById } from "@/data/user";
+import { IAgoraRTCClient } from "agora-rtc-sdk-ng";
 
 const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID!;
 const appCertificate = process.env.NEXT_PUBLIC_AGORA_APP_CERT!;
 
 class Agora {
     private static agoraInstance: Agora;
+    private client?: IAgoraRTCClient;
     
     static getInstance(): Agora {
         if(!this.agoraInstance) {
@@ -12,6 +14,13 @@ class Agora {
         }
 
         return Agora.agoraInstance;
+    }
+
+    async startCamera() {
+        const { default: AgoraRTC } = await import("agora-rtc-sdk-ng");
+        const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+        await this.client?.publish(videoTrack);
+        return videoTrack;
     }
 
     async getRtcToken(roomId: string, userId: string) {
@@ -112,7 +121,7 @@ class Agora {
         const tracks = await AgoraRTC.createMicrophoneAndCameraTracks();
         onWebCamStart(tracks[1]);
         await client.publish(tracks);
-
+        this.client = client;
         return { tracks, client };
     }
 }

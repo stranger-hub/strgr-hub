@@ -12,8 +12,6 @@ export default function Main() {
   const [open, setIsOpen] = useState(true);
   const [room, setRoom] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [cameraOn, setCameraOn] = useState(false);
-  const [micOn, setMicOn] = useState(false);
   const [themVideo, setThemVideo] = useState<IRemoteVideoTrack>();
   const [myVideo, setMyVideo] = useState<ICameraVideoTrack>();
   const [themUser, setThemUser] = useState<any>();

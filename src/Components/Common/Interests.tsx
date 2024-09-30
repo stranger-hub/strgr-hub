@@ -1,32 +1,56 @@
 "use client";
-import React, { useState } from "react";
-import interests from "@/data/interests";
+import React, { useEffect, useState } from "react";
+import initialInterests from "@/data/interests";
 
-interface Interests {
+interface InterestsInterface {
   interest: string;
   icon: any;
   selected?: boolean;
 }
 
-export default function Interests() {
-  const [selectedInterests, setSelectedInterests] =
-    useState<Interests[]>(interests);
+export default function Interests({
+  interests,
+  updateProfile,
+}: {
+  interests: string[];
+  updateProfile: (
+    name?: string,
+    dob?: Date,
+    gender?: string,
+    interests?: string[]
+  ) => void;
+}) {
+  const [allInterests, setAllInterests] = useState<InterestsInterface[]>(initialInterests);
+  useEffect(() => {
+    const updatedInterests = initialInterests.map((i) => {
+      if (interests.find((it) => it === i.interest)) {
+        return { ...i, selected: true };
+      }
+      return i;
+    });
+    setAllInterests(updatedInterests);
+  }, [interests]);
 
   const handleOnClick = (index: number) => {
-    const temp: Interests[] = [...selectedInterests];
+    const temp: InterestsInterface[] = [...allInterests];
     let count: number = 0;
-    temp.forEach((i: Interests) => {
+    temp.forEach((i: InterestsInterface) => {
       i.selected && count++;
     });
     if (count > 2 && !temp[index].selected) return;
-
     temp[index].selected = !temp[index].selected;
-    setSelectedInterests(temp);
+    setAllInterests(temp);
+    updateProfile(
+      undefined,
+      undefined,
+      undefined,
+      temp.filter((t) => t.selected).map((t) => t.interest)
+    );
   };
 
   return (
     <div className="max-w-[600px] flex justify-center flex-wrap gap-5">
-      {selectedInterests.map((interest, index) => (
+      {allInterests.map((interest, index) => (
         <div
           key={interest.interest}
           onClick={() => handleOnClick(index)}

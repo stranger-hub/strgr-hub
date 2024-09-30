@@ -26,8 +26,9 @@ model User {
   accounts      Account[]
   password      String?
   role          UserRole @default(USER)
+  dob           DateTime?
   gender        String?
-  country       String?
+  interests     String[] @default([])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
