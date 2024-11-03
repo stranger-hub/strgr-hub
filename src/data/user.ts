@@ -22,6 +22,7 @@ export const getUserById = async (id: string) => {
                 id,
             }
         });
+        console.log("themUser in fn", user);
 
         return user;
     } catch(error: any) {

@@ -154,11 +154,19 @@ export default function CollapseChat({
 
   return (
     <div className="w-[100%]">
-      <ChatHeader themUser={themUser} />
-      <Chat userId={userId} messages={messages} />
-      <ChatInput
-        handleMessageSend={handleMessageSend}
-      />
+      {themUser ?
+        <>
+          <ChatHeader themUser={themUser} />
+          <Chat userId={userId} messages={messages} />
+          <ChatInput
+            handleMessageSend={handleMessageSend}
+          />
+        </> :
+        <div className="bg-base-200 h-[80vh] flex justify-center items-center gap-2">
+          <span className="loading loading-ring loading-md"></span>
+          <p>Waiting for someone to join...</p>
+        </div>
+      }
     </div>
   );
 }

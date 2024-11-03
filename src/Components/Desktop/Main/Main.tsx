@@ -5,74 +5,87 @@ import VideoSection from "./VideoSection";
 import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import agoraInstance from "@/lib/agora";
+import { getRoom, leaveRoom } from "@/lib/room";
 import { RtmChannel } from "agora-rtm-sdk";
 import { ICameraVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
+import { Room } from "@prisma/client";
 
 export default function Main() {
   const [open, setIsOpen] = useState(true);
-  const [room, setRoom] = useState(null);
+  const [room, setRoom] = useState<Room>();
   const [messages, setMessages] = useState([]);
   const [themVideo, setThemVideo] = useState<IRemoteVideoTrack>();
   const [myVideo, setMyVideo] = useState<ICameraVideoTrack>();
   const [themUser, setThemUser] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log("themUser", themUser);
-  }, [themUser]);
-
-  const channelRef = useRef<RtmChannel>();
+  const rtmChannelRef = useRef<RtmChannel>();
 
   const session = useSession();
+  const userId = session.data?.user?.id;
+  // const userId = (Math.random() * 1000).toString();
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: any) => { // delete/update room on leaving
+      delete event['returnValue'];
+      if (room?.id) {
+        leaveRoom(room?.id);
+        return false;
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [room]);
 
   const joinRoom = async () => {
+    setIsLoading(true);
+    setThemUser(null);
+    setThemVideo(undefined);
     try {
-      const userId = session.data?.user?.id;
-      if(userId) {
-        const rtcToken = await agoraInstance.getRtcToken("123", userId);
+      if (userId) {
+        if(room?.id)  {
+          await leaveRoom(room.id); // leave room if already joined one
+        }
+        const roomResult = await getRoom(); // get room
+        if (!roomResult) return;
+        setRoom(roomResult);
+
+        const rtcToken = await agoraInstance.getRtcToken(roomResult.id, userId); // token
         const rtmToken = await agoraInstance.getRtmToken(userId);
-        channelRef.current = await agoraInstance.connectToAgoraRtm(userId, "123", rtmToken, setMessages, setThemUser);
-        await agoraInstance.connectToAgoraRtc(
-          userId, 
-          "123",
+
+        rtmChannelRef.current = await agoraInstance.connectToAgoraRtm(userId, roomResult.id, rtmToken, setMessages); // RTM
+
+        await agoraInstance.connectToAgoraRtc( //RTC
+          userId,
+          roomResult.id,
           rtcToken,
-          (themVideo: IRemoteVideoTrack) => setThemVideo(themVideo), 
-          (myVideo: ICameraVideoTrack) => setMyVideo(myVideo)
+          (themVideo: IRemoteVideoTrack) => setThemVideo(themVideo),
+          (myVideo: ICameraVideoTrack) => setMyVideo(myVideo),
+          (themUser: any) => setThemUser(themUser),
         );
       } else {
         toast.error("user not logged in properly, please re-login");
       }
-    } catch(e: any) {
+    } catch (e: any) {
       console.log(e.message);
       toast.error("error joining room, please try again later");
     }
+    setIsLoading(false);
   }
 
-  const getRoom = async () => {
-    const res = await fetch("/api/rooms?userId=" + session.data?.user?.id);
-    const result = await res.json();
-    if(result.success) {
-        if(result?.data?.roomId) {
-        }
-         else {
-            const createRes = await fetch("/api/rooms", {
-                method: "POST",
-            });
-            const createResult = await createRes.json();
-            console.log("createResult", createResult);
-        }
-    } else {
-        toast.error("something went wrong, please reload and try again");
-    }
-  }
 
   return (
     <>
       <Toaster />
       <div className="flex gap-10 h-[80vh]">
         <div className={open ? "w-[60%]" : "w-[100%]"}>
-          <VideoSection getRoom={joinRoom} myVideo={myVideo} themVideo={themVideo} />
+          <VideoSection isLoading={isLoading} getRoom={joinRoom} myVideo={myVideo} themVideo={themVideo} open={open} themUser={themUser} />
         </div>
-        <CollapseComponent open={open} setIsOpen={setIsOpen} messages={messages} channel={channelRef} setMessages={setMessages} themUser={themUser} />
+        <CollapseComponent isLoading={isLoading} open={open} setIsOpen={setIsOpen} messages={messages} channel={rtmChannelRef} setMessages={setMessages} themUser={themUser} />
       </div>
     </>
   );

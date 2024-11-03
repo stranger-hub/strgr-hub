@@ -6,8 +6,6 @@ import LogoutBtn from "./LogoutBtn";
 const Navbar = async () => {
   const session = await auth();
   const location = await (await fetch('https://ipapi.co/json/')).json();
-  console.log(location);
-  
   
   return (
     <div className="navbar bg-base-200 h-[10vh] px-[60px] py-[20px]">

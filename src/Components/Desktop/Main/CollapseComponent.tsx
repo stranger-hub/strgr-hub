@@ -5,6 +5,7 @@ import { RtmChannel } from "agora-rtm-sdk";
 import { MutableRefObject } from "react";
 
 export default function CollapseComponent({
+  isLoading,
   open,
   setIsOpen,
   messages,
@@ -12,6 +13,7 @@ export default function CollapseComponent({
   setMessages,
   themUser,
 }: {
+  isLoading: boolean;
   open: any;
   setIsOpen: any;
   messages: { userId: string, message: string }[];
