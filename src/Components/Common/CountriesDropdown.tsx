@@ -7,7 +7,7 @@ export default function CountriesDropdown() {
   return (
     <div className="flex gap-5 items-center">
       <div
-        className="tooltip tooltip-info tooltip-bottom"
+        className="z-[100] tooltip tooltip-info tooltip-bottom"
         data-tip="Select a country to connect with strangers of that country"
       >
         <BsInfoCircleFill />

@@ -1,6 +1,9 @@
 import agoraInstance from "@/lib/agora";
+import { post } from "@/lib/api";
 import { ICameraVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
+import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import {
   BsCameraVideoFill,
   BsCameraVideoOffFill,
@@ -26,8 +29,11 @@ export default function VideoSection({
   themUser: any;
 }) {
   const [trackState, setTrackState] = useState({ video: true, audio: true });
+  const [requestLoading, setRequestLoading] = useState(false);
   const myRef = useRef(null);
   const themRef = useRef(null);
+  const session = useSession();
+  const userId = session.data?.user?.id;
 
   useEffect(() => {
     const playerRef = myRef.current;
@@ -59,13 +65,36 @@ export default function VideoSection({
     }
   };
 
+  const addFriend = async () => {
+    setRequestLoading(true);
+    const response = await post(`/api/user/friends?senderId=${themUser?.id}&receiverId=${userId}`, {});
+    if (response?.success) {
+      toast.success("Request sent! 🥳", {
+        style: {
+          background: '#333',
+          color: '#fff',
+        },
+        id: 'friend-req'
+      });
+    } else {
+      toast.error(response?.message ? response?.message : "Something went wrong, please try again later 🤔", {
+        style: {
+          background: '#333',
+          color: '#fff',
+        },
+        id: 'friend-req'
+      });
+    }
+    setRequestLoading(false);
+  }
+
   return (
     <div className={`relative ${!open && 'flex justify-center items-center flex-wrap gap-[2%]'}`}>
       <div
         className={`${
           open
             ? "h-[150px] w-[225px] absolute bottom-0 right-0 border border-primary"
-            : "h-[65vh] w-[49%]"
+            : "h-[70vh] w-[49%]"
         } bg-base-200 rounded-lg z-[1000]`}
       >
         <div
@@ -80,27 +109,24 @@ export default function VideoSection({
         ></div>
       </div>
 
-      <div className={`bg-base-200 rounded-lg h-[65vh] ${!open && 'w-[49%]'} z-[999]`}>
-        {
-          themUser ? 
-          <div
-            ref={themRef}
-            className="rounded-lg"
-            style={{
-              height: "100%",
-              width: "100%",
-              zIndex: "inherit",
-              overflow: "hidden",
-            }}
-          >
-            {/* {!themVideo?.isPlaying && <BsCameraVideoOffFill color="gray" size={50} className="absolute left-52 top-52" />} */}
+      <div className={`bg-base-200 rounded-lg h-[70vh] ${!open && 'w-[49%]'} z-[999]`}>
+        <div
+          ref={themRef}
+          className="rounded-lg"
+          style={{
+            height: "100%",
+            width: "100%",
+            zIndex: "inherit",
+            overflow: "hidden",
+          }}
+        ></div>
+        {!themUser && (
+          <div className={`absolute top-0 h-[70vh] ${open ? 'w-full left-0' : 'w-[49%] right-0'} flex justify-center items-center z-[10]`}>
+            <span className="loading loading-ring loading-md me-2"></span>
+            <p>Waiting...</p>
           </div>
-          : 
-          <div className="flex h-[100%] justify-center items-center gap-2">
-            <span className="loading loading-ring loading-md"></span>
-            <p>Waiting for someone to join...</p>
-          </div>
-        }
+        )}
+
       </div>
       <div className="flex gap-3 mt-5">
         <ActionButton
@@ -135,9 +161,9 @@ export default function VideoSection({
         />
         <ActionButton
           icon={<BsPersonFillAdd size={25} />}
-          func={() => {}}
+          func={addFriend}
           tooltipData="add friend"
-          disabled={!themVideo || isLoading}
+          disabled={!themUser || isLoading || requestLoading}
         />
       </div>
     </div>

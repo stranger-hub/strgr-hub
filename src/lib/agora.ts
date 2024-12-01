@@ -1,4 +1,3 @@
-import { getUserById } from "@/data/user";
 import { IAgoraRTCClient, ICameraVideoTrack, IMicrophoneAudioTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
 
 const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID!;
@@ -8,6 +7,7 @@ class Agora {
   private static agoraInstance: Agora;
   rtcClient?: IAgoraRTCClient;
   tracks?: [IMicrophoneAudioTrack, ICameraVideoTrack];
+  private rtcListenersInitialized = false;
 
   static getInstance(): Agora {
     if (!this.agoraInstance) {
@@ -92,44 +92,49 @@ class Agora {
     onWebCamStart: (x: ICameraVideoTrack) => void,
     onThemUser: (x: any) => void,
   ) {
-    const { default: AgoraRTC } = await import("agora-rtc-sdk-ng");
-    const client = AgoraRTC.createClient({
-      mode: "rtc",
-      codec: "vp8",
-    });
-    await client.join(
-      process.env.NEXT_PUBLIC_AGORA_APP_ID as string,
-      roomId,
-      token,
-      userId
-    );
-    client.on("user-published", async (themUser, mediaType) => {
-      await client.subscribe(themUser, mediaType).then(() => {
-        if (mediaType === "video"  && themUser.videoTrack) {
+    if (!this.rtcListenersInitialized) {  // Prevent reinitializing listeners
+      this.rtcListenersInitialized = true;
+      
+      const { default: AgoraRTC } = await import("agora-rtc-sdk-ng");
+      const client = AgoraRTC.createClient({
+        mode: "rtc",
+        codec: "vp8",
+      });
+      await client.join(
+        process.env.NEXT_PUBLIC_AGORA_APP_ID as string,
+        roomId,
+        token,
+        userId
+      );
+
+      client.on("user-published", async (themUser, mediaType) => {
+        console.log("User published:", themUser.uid);
+        await client.subscribe(themUser, mediaType);
+        if (mediaType === "video" && themUser.videoTrack) {
           onVideoConnect(themUser.videoTrack);
         }
         if (mediaType === "audio") {
           themUser.audioTrack?.play();
         }
+        if (themUser.uid) {
+          const res = await fetch(`/api/user?userId=${themUser.uid.toString()}`);
+          const themUserDetails = (await res.json())?.data;
+          onThemUser(themUserDetails);
+        }
       });
-      console.log("themUser?.uid", themUser?.uid);
-      if(themUser?.uid) {
-        const themUserDetails = await getUserById(themUser.uid.toString());
-        onThemUser(themUserDetails);
-      }
-    });
 
-    client.on("user-unpublished", () => {
-      onThemUser(null);
-      console.log("user left");
-    });
+      client.on("user-left", () => {
+        onThemUser(null);
+        console.log("User left");
+      });
+      const tracks = await AgoraRTC.createMicrophoneAndCameraTracks();
+      onWebCamStart(tracks[1]);
+      await client.publish(tracks);
+      this.rtcClient = client;
+      this.tracks = tracks;
+    }
 
-    const tracks = await AgoraRTC.createMicrophoneAndCameraTracks();
-    onWebCamStart(tracks[1]);
-    await client.publish(tracks);
-    this.rtcClient = client;
-    this.tracks = tracks;
-    return { tracks, client };
+    return { tracks: this.tracks, client: this.rtcClient };
   }
 }
 

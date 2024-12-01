@@ -1,4 +1,5 @@
 "use client";
+import { User } from "@prisma/client";
 import { RtmChannel } from "agora-rtm-sdk";
 import EmojiPicker, { Theme } from "emoji-picker-react";
 import { useSession } from "next-auth/react";
@@ -10,14 +11,13 @@ import { BsEmojiSmileFill, BsSendArrowUpFill } from "react-icons/bs";
 function ChatHeader({
   themUser
 }: {
-  themUser: { name: string, image: string }
+  themUser: User
 }) {
   return (
     <div className="bg-base-200 p-3 flex items-center gap-4 h-[8vh]">
       <div className="avatar online placeholder">
         {/* use class placeholder when DP not available */}
         <div className="bg-base-100 text-neutral-content w-10 rounded-full capitalize">
-          <span className="text-base">{themUser?.name}</span>
           {themUser?.image ?
             <Image height={70} width={70} alt="profile pic" className="mask mask-circle" src={themUser?.image} />
             :
@@ -30,6 +30,12 @@ function ChatHeader({
         </div>
       </div>
       <p className="text-sm">{themUser?.name}</p>
+      {themUser.countryCode && <Image
+        alt="United States"
+        src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${themUser.countryCode}.svg`}
+        width={18}
+        height={12}
+      />}
     </div>
   );
 }
@@ -128,7 +134,7 @@ export default function CollapseChat({
   messages: { userId: string; message: string }[];
   channel: MutableRefObject<RtmChannel | undefined>,
   setMessages: any,
-  themUser: { name: string, image: string }
+  themUser: User | null
 }) {
   const session = useSession();
   const userId = session.data?.user?.id as string;
@@ -148,7 +154,13 @@ export default function CollapseChat({
       ]);
     } catch (e: any) {
       console.log(e.message);
-      toast.error("error sending message!");
+      toast.error("error sending message!", {
+        style: {
+          background: '#333',
+          color: '#fff',
+        },
+        id: 'message'
+      });
     }
   }
 
@@ -157,7 +169,12 @@ export default function CollapseChat({
       {themUser ?
         <>
           <ChatHeader themUser={themUser} />
-          <Chat userId={userId} messages={messages} />
+          {messages.length === 0 ? 
+            <div className="h-[64vh] flex justify-center items-center">
+              <p>Echo... echo... 📡</p>
+            </div> :
+            <Chat userId={userId} messages={messages} />
+          }
           <ChatInput
             handleMessageSend={handleMessageSend}
           />

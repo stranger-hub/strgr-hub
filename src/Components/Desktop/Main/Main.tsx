@@ -8,7 +8,7 @@ import agoraInstance from "@/lib/agora";
 import { getRoom, leaveRoom } from "@/lib/room";
 import { RtmChannel } from "agora-rtm-sdk";
 import { ICameraVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
-import { Room } from "@prisma/client";
+import { Room, User } from "@prisma/client";
 
 export default function Main() {
   const [open, setIsOpen] = useState(true);
@@ -16,7 +16,7 @@ export default function Main() {
   const [messages, setMessages] = useState([]);
   const [themVideo, setThemVideo] = useState<IRemoteVideoTrack>();
   const [myVideo, setMyVideo] = useState<ICameraVideoTrack>();
-  const [themUser, setThemUser] = useState<any>();
+  const [themUser, setThemUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const rtmChannelRef = useRef<RtmChannel>();
@@ -68,11 +68,23 @@ export default function Main() {
           (themUser: any) => setThemUser(themUser),
         );
       } else {
-        toast.error("user not logged in properly, please re-login");
+        toast.error("user not logged in properly, please re-login", {
+          style: {
+            background: '#333',
+            color: '#fff',
+          },
+          id: 'room-join'
+        });
       }
     } catch (e: any) {
       console.log(e.message);
-      toast.error("error joining room, please try again later");
+      toast.error("error joining room, please try again later", {
+        style: {
+          background: '#333',
+          color: '#fff',
+        },
+        id: 'room-join'
+      });
     }
     setIsLoading(false);
   }
@@ -82,7 +94,7 @@ export default function Main() {
     <>
       <Toaster />
       <div className="flex gap-10 h-[80vh]">
-        <div className={open ? "w-[60%]" : "w-[100%]"}>
+        <div className={open ? "w-[70%]" : "w-[100%]"}>
           <VideoSection isLoading={isLoading} getRoom={joinRoom} myVideo={myVideo} themVideo={themVideo} open={open} themUser={themUser} />
         </div>
         <CollapseComponent isLoading={isLoading} open={open} setIsOpen={setIsOpen} messages={messages} channel={rtmChannelRef} setMessages={setMessages} themUser={themUser} />

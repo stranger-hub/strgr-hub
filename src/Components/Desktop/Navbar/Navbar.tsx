@@ -8,14 +8,14 @@ const Navbar = async () => {
   const location = await (await fetch('https://ipapi.co/json/')).json();
   
   return (
-    <div className="navbar bg-base-200 h-[10vh] px-[60px] py-[20px]">
+    <div className="navbar bg-base-200 h-[10vh] px-[15px] lg:px-[60px] py-[20px]">
       <Link href={"/"} className="flex-1">
         <Image src="/logo.png" alt="logo" width={200} height={200} />
-        <p>{location.country_name}</p>
+        {/* <p>{location.country_name}</p> */}
       </Link>
       <div className="dropdown dropdown-end">
         <div className="flex items-center gap-3">
-          <p>Hello {session?.user?.name ? session?.user?.name?.split(" ")[0] : "stranger"}</p>
+          <p className="hidden lg:block">Hello {session?.user?.name ? session?.user?.name?.split(" ")[0] : "stranger"}</p>
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
             {session?.user?.image ? 
                 <Image height={70} width={70} alt="profile pic" className="mask mask-circle" src={session?.user?.image} />
@@ -30,16 +30,13 @@ const Navbar = async () => {
         </div>
         <ul
           tabIndex={0}
-          className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 border border-primary"
+          className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 border border-primary z-[1000]"
         >
           <li>
             <Link href={"/profile"} className="justify-between">
               Profile
               <span className="badge">New</span>
             </Link>
-          </li>
-          <li>
-            <a>Settings</a>
           </li>
           <li>
             <LogoutBtn />

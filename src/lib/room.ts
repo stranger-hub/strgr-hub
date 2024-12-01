@@ -8,7 +8,12 @@ export const getRoom = async (): Promise<Room | undefined> => {
         if (result.success && result.data) {
             return result.data;
         } else {
-            toast.error("cannot create room, please reload and try again!!");
+            toast.error("cannot create room, please reload and try again!!", {
+                style: {
+                    background: '#333',
+                    color: '#fff',
+                },
+            });
         }
     } catch (e: any) {
         console.log(e.message);

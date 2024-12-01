@@ -55,7 +55,13 @@ export default function ProfileDetails({ user }: { user: Profile }) {
     });
     const response = await res.json();
     if(!response.success) {
-      toast.error("Profile updation failed, please try again later !!");
+      toast.error("Profile updation failed, please try again later !!", {
+        style: {
+          background: '#333',
+          color: '#fff',
+        },
+        id: 'profile'
+      });
     }
   }
 

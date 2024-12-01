@@ -5,7 +5,6 @@
  */
 export const publicRoutes: string[] = [
     "/about",
-    "/tnc",
     "/policies",
 ];
 
