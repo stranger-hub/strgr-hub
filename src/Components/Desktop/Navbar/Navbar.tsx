@@ -16,8 +16,8 @@ const Navbar = async () => {
       <div className="dropdown dropdown-end">
         <div className="flex items-center gap-3">
           <p className="hidden lg:block">Hello {session?.user?.name ? session?.user?.name?.split(" ")[0] : "stranger"}</p>
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-            {session?.user?.image ? 
+          {session?.user && <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+            {session.user.image ? 
                 <Image height={70} width={70} alt="profile pic" className="mask mask-circle" src={session?.user?.image} />
               : 
                 <div className="avatar placeholder">
@@ -26,7 +26,7 @@ const Navbar = async () => {
                   </div>
                 </div>
             }
-          </div>
+          </div>}
         </div>
         <ul
           tabIndex={0}

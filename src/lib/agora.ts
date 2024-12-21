@@ -1,4 +1,5 @@
 import { IAgoraRTCClient, ICameraVideoTrack, IMicrophoneAudioTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
+import { get } from "./api";
 
 const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID!;
 const appCertificate = process.env.NEXT_PUBLIC_AGORA_APP_CERT!;
@@ -117,8 +118,8 @@ class Agora {
           themUser.audioTrack?.play();
         }
         if (themUser.uid) {
-          const res = await fetch(`/api/user?userId=${themUser.uid.toString()}`);
-          const themUserDetails = (await res.json())?.data;
+          const res = await get(`/api/user?userId=${themUser.uid.toString()}`);
+          const themUserDetails = res?.data;
           onThemUser(themUserDetails);
         }
       });

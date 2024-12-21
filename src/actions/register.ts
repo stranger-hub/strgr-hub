@@ -27,7 +27,7 @@ export const signup = async (values: z.infer<typeof RegisterSchema>) => {
             email: email,
             password: hashedPassword,
             gender: gender,
-            country: country,
+            countryCode: country,
         }
     });
 

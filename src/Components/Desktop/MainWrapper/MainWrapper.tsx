@@ -3,29 +3,48 @@
 import React, { useState } from "react";
 import Welcome from "@/Components/Common/Welcome/Welcome";
 import Main from "@/Components/Desktop/Main/Main";
+import {
+    MediaPermissionsError,
+    MediaPermissionsErrorType,
+    requestMediaPermissions
+} from 'mic-check';
 
 export default function MainWrapper() {
     const [permissionsGranted, setPermissionsGranted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [openMain, setOpenMain] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
 
     const checkPermissions = async () => {
-        try {
+        if(permissionsGranted) {
+            setOpenMain(true);
+        } else {
             setLoading(true);
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: true,
-            });
-            setPermissionsGranted(true);
-            stream.getTracks().forEach((track) => track.stop());
-            setLoading(false);
-        } catch (error) {
-            setPermissionsGranted(false);
+            setErrorMsg("");
+            requestMediaPermissions()
+                .then(() => {
+                    setPermissionsGranted(true);
+                    setLoading(false);
+                })
+                .catch((err: MediaPermissionsError) => {
+                    const { type, name, message } = err;
+                    if (type === MediaPermissionsErrorType.SystemPermissionDenied) {
+                        setErrorMsg("Browser does not have permission to access camera or microphone");
+                    } else if (type === MediaPermissionsErrorType.UserPermissionDenied) {
+                        setErrorMsg("User didn't allow app to access camera or microphone");
+                    } else if (type === MediaPermissionsErrorType.CouldNotStartVideoSource) {
+                        setErrorMsg("Camera is in use by another application or browser tab");
+                    } else {
+                        setErrorMsg("Something went wrong, please refresh the tab and check browser permissions");
+                    }
+                    setLoading(false);
+                });
         }
     };
 
-    return permissionsGranted ? (
+    return openMain ? (
         <Main />
     ) : (
-        <Welcome loading={loading} onRequestPermissions={checkPermissions} />
+        <Welcome errorMsg={errorMsg} loading={loading} onRequestPermissions={checkPermissions} permissionsGranted={permissionsGranted} />
     );
 }

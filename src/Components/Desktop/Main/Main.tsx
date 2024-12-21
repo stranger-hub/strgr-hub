@@ -18,12 +18,20 @@ export default function Main() {
   const [myVideo, setMyVideo] = useState<ICameraVideoTrack>();
   const [themUser, setThemUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const initialized = useRef(false)
 
   const rtmChannelRef = useRef<RtmChannel>();
 
   const session = useSession();
   const userId = session.data?.user?.id;
   // const userId = (Math.random() * 1000).toString();
+
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      joinRoom();
+    }
+  }, []);
 
   useEffect(() => {
     const handleBeforeUnload = (event: any) => { // delete/update room on leaving
@@ -77,7 +85,7 @@ export default function Main() {
         });
       }
     } catch (e: any) {
-      console.log(e.message);
+      console.log(e);
       toast.error("error joining room, please try again later", {
         style: {
           background: '#333',

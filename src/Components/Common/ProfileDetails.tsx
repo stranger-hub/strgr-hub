@@ -7,6 +7,7 @@ import DatePicker from "react-date-picker";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
 import toast, { Toaster } from "react-hot-toast";
+import { post } from "@/lib/api";
 
 interface Profile {
   id?: string,
@@ -49,11 +50,10 @@ export default function ProfileDetails({ user }: { user: Profile }) {
     gender?: string,
     interests?: string[]
   ) {
-    const res = await fetch("/api/user?userId=" + user.id, {
-      method: "POST",
-      body: JSON.stringify({ name, dob, gender, interests }),
-    });
-    const response = await res.json();
+    const response = await post(
+      "/api/user?userId=" + user.id, 
+      { name, dob, gender, interests }
+    );
     if(!response.success) {
       toast.error("Profile updation failed, please try again later !!", {
         style: {

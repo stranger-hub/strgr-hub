@@ -1,3 +1,4 @@
+import ReportPopup from "@/Components/Common/ReportPopup";
 import agoraInstance from "@/lib/agora";
 import { post } from "@/lib/api";
 import { ICameraVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
@@ -7,6 +8,7 @@ import toast from "react-hot-toast";
 import {
   BsCameraVideoFill,
   BsCameraVideoOffFill,
+  BsExclamationTriangleFill,
   BsFastForwardCircleFill,
   BsMicFill,
   BsMicMuteFill,
@@ -30,6 +32,7 @@ export default function VideoSection({
 }) {
   const [trackState, setTrackState] = useState({ video: true, audio: true });
   const [requestLoading, setRequestLoading] = useState(false);
+  const [reporting, setReporting] = useState(false);
   const myRef = useRef(null);
   const themRef = useRef(null);
   const session = useSession();
@@ -88,8 +91,32 @@ export default function VideoSection({
     setRequestLoading(false);
   }
 
+  const report = async (message: string) => {
+    setReporting(true);
+    const response = await post(`/api/report?reportedId=${themUser?.id}&reporteeId=${userId}`, { message });
+    if (response?.success) {
+      toast.success("Reported! we will take appropriate actions soon.", {
+        style: {
+          background: '#333',
+          color: '#fff',
+        },
+        id: 'report'
+      });
+    } else {
+      toast.error(response?.message ? response?.message : "Something went wrong, please try again later 🤔", {
+        style: {
+          background: '#333',
+          color: '#fff',
+        },
+        id: 'report'
+      });
+    }
+    setReporting(false);
+  }
+
   return (
     <div className={`relative ${!open && 'flex justify-center items-center flex-wrap gap-[2%]'}`}>
+      <ReportPopup report={report} />
       <div
         className={`${
           open
@@ -164,6 +191,12 @@ export default function VideoSection({
           func={addFriend}
           tooltipData="add friend"
           disabled={!themUser || isLoading || requestLoading}
+        />
+        <ActionButton
+          icon={<BsExclamationTriangleFill size={25} />}
+          func={() => (document.getElementById('my_modal_2') as any)?.showModal()}
+          tooltipData="report"
+          disabled={!themUser || isLoading || reporting}
         />
       </div>
     </div>

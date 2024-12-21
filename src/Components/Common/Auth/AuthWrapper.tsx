@@ -20,10 +20,19 @@ export default function AuthWrapper({
                 <h2 className="font-bold text-2xl">
                     {register ? "REGISTER" : "LOGIN"}
                 </h2>
-                <p className="mt-5 mb-10 font-semibold">
+                <p className="mt-5 mb-4 font-semibold">
                     Make a strong introduction to{" "}
                     <span className="text-primary">strangers</span>
                 </p>
+                <div className="flex justify-center items-center gap-4 text-sm mb-10">
+                    <Link href="/about" className="hover:text-primary">
+                        About us
+                    </Link>
+                    <div className="divider divider-horizontal before:bg-gray-400 after:bg-gray-400"></div>
+                    <Link href="/policies" className="hover:text-primary">
+                        Privacy policies
+                    </Link>
+                </div>
                 {children}
                 {/* <hr className="my-10 border-primary" /> */}
                 <Providers isPending={isPending} />

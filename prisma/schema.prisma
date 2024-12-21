@@ -81,6 +81,13 @@ model Room {
   status        RoomStatus      @default(WAITING)
 }
 
+model Report {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  reporteeId    String          @db.ObjectId
+  reportedId    String          @db.ObjectId
+  message       String
+}
+
 
 // npx prisma generate
 // npx prisma db push

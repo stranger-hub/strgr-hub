@@ -1,10 +1,10 @@
 import { Room } from "@prisma/client";
 import toast from "react-hot-toast";
+import { get } from "./api";
 
 export const getRoom = async (): Promise<Room | undefined> => {
     try {
-        const res = await fetch("/api/rooms");
-        const result = await res.json();
+        const result = await get("/api/rooms");
         if (result.success && result.data) {
             return result.data;
         } else {
