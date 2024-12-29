@@ -56,6 +56,21 @@ class Agora {
     return token;
   }
 
+  async leaveRoom() {
+    if (this.rtcClient) {
+      await this.rtcClient.leave();
+      this.rtcClient.removeAllListeners();
+      this.rtcClient = undefined;
+    }
+    if (this.tracks) {
+      this.tracks.forEach(track => {
+        track.stop();
+        track.close();
+      });
+      this.tracks = undefined;
+    }
+  }
+
   async connectToAgoraRtm(
     userId: string,
     roomId: string,

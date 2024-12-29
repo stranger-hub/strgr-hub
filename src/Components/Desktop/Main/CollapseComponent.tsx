@@ -28,8 +28,8 @@ export default function CollapseComponent({
   const [tab, setTab] = React.useState<number>(1);
 
   return (
-    <div className={`flex ${open && "w-[40%]"}`}>
-      <div className="bg-base-200 px-2 py-4 rounded-s-lg flex flex-col justify-between gap-10">
+    <div className={`transition-all duration-200 flex max-w-[40%] ${open ? 'w-[750px]' : 'w-[50px]'}`}>
+      <div className="bg-base-200 px-2 py-4 rounded-s-lg flex flex-col justify-between gap-10 w-[50px]">
         <button onClick={() => setIsOpen((prev: boolean) => !prev)} className={buttonCustomStyle}>
           {!open ? (
             <BsFillCaretLeftFill />
@@ -44,12 +44,10 @@ export default function CollapseComponent({
           <BsPersonCheckFill />
         </button>
       </div>
-      {open && (
-        <div className={`w-[100%]`}>
-          {tab === 1 && <CollapseChat messages={messages} channel={channel} setMessages={setMessages} themUser={themUser} />}
-          {tab === 2 && <Friends />}
-        </div>
-      )}
+      <div className={`${open ? 'w-[100%] opacity-100' : 'w-[0%] opacity-0'} overflow-x-hidden transition-all duration-200`}>
+        {tab === 1 && <CollapseChat messages={messages} channel={channel} setMessages={setMessages} themUser={themUser} />}
+        {tab === 2 && <Friends />}
+      </div>
     </div>
   );
 }

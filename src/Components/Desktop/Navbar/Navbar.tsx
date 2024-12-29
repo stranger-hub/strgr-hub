@@ -9,7 +9,8 @@ const Navbar = async () => {
   
   return (
     <div className="navbar bg-base-200 h-[10vh] px-[15px] lg:px-[60px] py-[20px]">
-      <Link href={"/"} className="flex-1">
+      <div className="mx-auto w-[100%] max-w-[1400px] flex items-center justify-between">
+      <Link href={"/"}>
         <Image src="/logo.png" alt="logo" width={200} height={200} />
         {/* <p>{location.country_name}</p> */}
       </Link>
@@ -42,6 +43,7 @@ const Navbar = async () => {
             <LogoutBtn />
           </li>
         </ul>
+      </div>
       </div>
     </div>
   );

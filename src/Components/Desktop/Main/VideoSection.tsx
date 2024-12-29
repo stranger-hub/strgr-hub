@@ -122,7 +122,7 @@ export default function VideoSection({
           open
             ? "h-[150px] w-[225px] absolute bottom-0 right-0 border border-primary"
             : "h-[70vh] w-[49%]"
-        } bg-base-200 rounded-lg z-[1000]`}
+        } transition-all duration-200 bg-base-200 rounded-lg z-[1000] order-2`}
       >
         <div
           ref={myRef}
@@ -136,7 +136,7 @@ export default function VideoSection({
         ></div>
       </div>
 
-      <div className={`bg-base-200 rounded-lg h-[70vh] ${!open && 'w-[49%]'} z-[999]`}>
+      <div className={`relative order-1 bg-base-200 rounded-lg h-[70vh] ${!open && 'w-[49%]'} z-[999]`}>
         <div
           ref={themRef}
           className="rounded-lg"
@@ -148,14 +148,14 @@ export default function VideoSection({
           }}
         ></div>
         {!themUser && (
-          <div className={`absolute top-0 h-[70vh] ${open ? 'w-full left-0' : 'w-[49%] right-0'} flex justify-center items-center z-[10]`}>
+          <div className={`absolute top-0 h-[70vh] w-full left-0 flex justify-center items-center z-[10]`}>
             <span className="loading loading-ring loading-md me-2"></span>
             <p>Waiting...</p>
           </div>
         )}
 
       </div>
-      <div className="flex gap-3 mt-5">
+      <div className="flex gap-3 mt-5 order-3">
         <ActionButton
           icon={<BsFastForwardCircleFill size={25} />}
           disabled={isLoading}

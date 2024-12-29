@@ -9,6 +9,8 @@ import { getRoom, leaveRoom } from "@/lib/room";
 import { RtmChannel } from "agora-rtm-sdk";
 import { ICameraVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
 import { Room, User } from "@prisma/client";
+// import { useRouter, usePathname } from "next/navigation";
+// import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export default function Main() {
   const [open, setIsOpen] = useState(true);
@@ -18,7 +20,9 @@ export default function Main() {
   const [myVideo, setMyVideo] = useState<ICameraVideoTrack>();
   const [themUser, setThemUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const initialized = useRef(false)
+  // const initialized = useRef(false);
+  // const router = useRouter();
+  // const pathname = usePathname();
 
   const rtmChannelRef = useRef<RtmChannel>();
 
@@ -26,12 +30,12 @@ export default function Main() {
   const userId = session.data?.user?.id;
   // const userId = (Math.random() * 1000).toString();
 
-  useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
-      joinRoom();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!initialized.current) {
+  //     initialized.current = true;
+  //     joinRoom();
+  //   }
+  // }, []);
 
   useEffect(() => {
     const handleBeforeUnload = (event: any) => { // delete/update room on leaving
@@ -85,7 +89,7 @@ export default function Main() {
         });
       }
     } catch (e: any) {
-      console.log(e);
+      console.log("failure reason", e);
       toast.error("error joining room, please try again later", {
         style: {
           background: '#333',
@@ -101,8 +105,8 @@ export default function Main() {
   return (
     <>
       <Toaster />
-      <div className="flex gap-10 h-[80vh]">
-        <div className={open ? "w-[70%]" : "w-[100%]"}>
+      <div className="flex gap-10 mx-auto max-w-[1400px] h-[80vh]">
+        <div className={`transition-all duration-200 w-[100%]`}>
           <VideoSection isLoading={isLoading} getRoom={joinRoom} myVideo={myVideo} themVideo={themVideo} open={open} themUser={themUser} />
         </div>
         <CollapseComponent isLoading={isLoading} open={open} setIsOpen={setIsOpen} messages={messages} channel={rtmChannelRef} setMessages={setMessages} themUser={themUser} />
