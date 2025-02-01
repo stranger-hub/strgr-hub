@@ -55,7 +55,7 @@ export default function WelcomeCarousel() {
                                     />
                                 </figure>
                                 <div className="card-body">
-                                    <h2 className="card-title">{data.heading}</h2>
+                                    <h2 className="card-title"><p className='text-center md:text-left'>{data.heading}</p></h2>
                                     <p>{data.description}</p>
                                 </div>
                             </div>

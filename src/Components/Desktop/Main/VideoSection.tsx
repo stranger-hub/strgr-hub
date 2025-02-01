@@ -1,22 +1,16 @@
 import ReportPopup from "@/Components/Common/ReportPopup";
+import useWindowSize from "@/hooks/useWindowSize";
 import agoraInstance from "@/lib/agora";
 import { post } from "@/lib/api";
 import { ICameraVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import {
-  BsCameraVideoFill,
-  BsCameraVideoOffFill,
-  BsExclamationTriangleFill,
-  BsFastForwardCircleFill,
-  BsMicFill,
-  BsMicMuteFill,
-  BsPersonFillAdd,
-} from "react-icons/bs";
+import ActionButtons from "./ActionButtons";
 
 export default function VideoSection({
   isLoading,
+  setOpenMobileChat,
   getRoom,
   myVideo,
   themVideo,
@@ -24,6 +18,7 @@ export default function VideoSection({
   themUser,
 }: {
   isLoading: boolean;
+  setOpenMobileChat: any;
   getRoom: any;
   myVideo?: ICameraVideoTrack;
   themVideo?: IRemoteVideoTrack;
@@ -33,6 +28,7 @@ export default function VideoSection({
   const [trackState, setTrackState] = useState({ video: true, audio: true });
   const [requestLoading, setRequestLoading] = useState(false);
   const [reporting, setReporting] = useState(false);
+  const { width } = useWindowSize();
   const myRef = useRef(null);
   const themRef = useRef(null);
   const session = useSession();
@@ -117,26 +113,9 @@ export default function VideoSection({
   return (
     <div className={`relative ${!open && 'flex justify-center items-center flex-wrap gap-[2%]'}`}>
       <ReportPopup report={report} />
-      <div
-        className={`${
-          open
-            ? "h-[150px] w-[225px] absolute bottom-0 right-0 border border-primary"
-            : "h-[70vh] w-[49%]"
-        } transition-all duration-200 bg-base-200 rounded-lg z-[1000] order-2`}
-      >
-        <div
-          ref={myRef}
-          className="rounded-lg z-[1000]"
-          style={{
-            height: "100%",
-            width: "100%",
-            zIndex: "inherit",
-            overflow: "hidden",
-          }}
-        ></div>
-      </div>
+      {width > 1000 && <MyVideoComponent width={width} open={open} myRef={myRef} />}
 
-      <div className={`relative order-1 bg-base-200 rounded-lg h-[70vh] ${!open && 'w-[49%]'} z-[999]`}>
+      <div className={`relative order-1 bg-base-200 rounded-lg h-[70dvh] ${(!open && width > 1000) ? 'w-[49%]' : 'w-full'} z-[999]`}>
         <div
           ref={themRef}
           className="rounded-lg"
@@ -148,76 +127,50 @@ export default function VideoSection({
           }}
         ></div>
         {!themUser && (
-          <div className={`absolute top-0 h-[70vh] w-full left-0 flex justify-center items-center z-[10]`}>
+          <div className={`absolute top-0 h-[70dvh] w-full left-0 flex justify-center items-center z-[10]`}>
             <span className="loading loading-ring loading-md me-2"></span>
             <p>Waiting...</p>
           </div>
         )}
-
+        {width <= 1000 && <MyVideoComponent width={width} open={open} myRef={myRef} />}
       </div>
-      <div className="flex gap-3 mt-5 order-3">
-        <ActionButton
-          icon={<BsFastForwardCircleFill size={25} />}
-          disabled={isLoading}
-          func={() => getRoom()}
-          tooltipData="skip to next stranger"
-        />
-        <ActionButton
-          icon={
-            trackState.video ? (
-              <BsCameraVideoFill size={25} />
-            ) : (
-              <BsCameraVideoOffFill size={25} />
-            )
-          }
-          disabled={isLoading}
-          func={() => mute("video")}
-          tooltipData="open/close camera"
-        />
-        <ActionButton
-          icon={
-            trackState.audio ? (
-              <BsMicFill size={25} />
-            ) : (
-              <BsMicMuteFill size={25} />
-            )
-          }
-          disabled={isLoading}
-          func={() => mute("audio")}
-          tooltipData="open/close mic"
-        />
-        <ActionButton
-          icon={<BsPersonFillAdd size={25} />}
-          func={addFriend}
-          tooltipData="add friend"
-          disabled={!themUser || isLoading || requestLoading}
-        />
-        <ActionButton
-          icon={<BsExclamationTriangleFill size={25} />}
-          func={() => (document.getElementById('my_modal_2') as any)?.showModal()}
-          tooltipData="report"
-          disabled={!themUser || isLoading || reporting}
-        />
-      </div>
+      <ActionButtons 
+        isLoading={isLoading}
+        setOpenMobileChat={width < 1000 && setOpenMobileChat} 
+        getRoom={getRoom} 
+        trackState={trackState} 
+        mute={mute} 
+        addFriend={addFriend} 
+        themUser={themUser} 
+        requestLoading={requestLoading} 
+        reporting={reporting} 
+      />
     </div>
   );
 }
 
-function ActionButton({ icon, func, tooltipData, disabled }: any) {
+
+const MyVideoComponent = ({ width, open, myRef }: any) => {
+  const getClassForVideoComponent = () => {
+    if (width < 1000) return "h-[22dvh] w-[25vw] absolute bottom-0 right-0 border border-primary"
+    if (open) return "h-[25dvh] w-[20vw] absolute bottom-0 right-0 border border-primary"
+    return "h-[70dvh] w-[49%]"
+  }
+
   return (
     <div
-      className="tooltip tooltip-bottom tooltip-secondary"
-      data-tip={tooltipData}
+      className={`${getClassForVideoComponent()} transition-all duration-200 bg-base-200 rounded-lg z-[1000] order-2`}
     >
-      <button
-        className={`h-[50px] w-[50px] flex justify-center items-center rounded-full border border-base-200 hover:border-primary btn ${
-          disabled ? "btn-disabled" : "btn-secondary"
-        } p-0`}
-        onClick={func}
-        disabled={disabled}
-      >
-        {icon}
-      </button>
+      <div
+        ref={myRef}
+        className="rounded-lg z-[1000]"
+        style={{
+          height: "100%",
+          width: "100%",
+          zIndex: "inherit",
+          overflow: "hidden",
+        }}
+      ></div>
     </div>
-  );
+  )
 }

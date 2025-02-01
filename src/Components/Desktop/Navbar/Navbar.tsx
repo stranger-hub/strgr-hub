@@ -5,10 +5,10 @@ import LogoutBtn from "./LogoutBtn";
 
 const Navbar = async () => {
   const session = await auth();
-  const location = await (await fetch('https://ipapi.co/json/')).json();
+  // const location = await (await fetch('https://ipapi.co/json/')).json();
   
   return (
-    <div className="navbar bg-base-200 h-[10vh] px-[15px] lg:px-[60px] py-[20px]">
+    <div className="navbar bg-base-200 h-[10dvh] px-[15px] lg:px-[60px] py-[20px]">
       <div className="mx-auto w-[100%] max-w-[1400px] flex items-center justify-between">
       <Link href={"/"}>
         <Image src="/logo.png" alt="logo" width={200} height={200} />
@@ -31,7 +31,7 @@ const Navbar = async () => {
         </div>
         <ul
           tabIndex={0}
-          className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 border border-primary z-[1000]"
+          className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 border border-primary z-[10000]"
         >
           <li>
             <Link href={"/profile"} className="justify-between">

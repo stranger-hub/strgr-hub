@@ -38,20 +38,20 @@ export default function Friends() {
   }, [userId, tab]);
 
   return (
-    <div className="bg-base-200 h-[80vh]">
-        <div role="tablist" className="tabs tabs-bordered py-3 bg-base-200 h-[6vh]">
+    <div className="bg-base-200 h-[80dvh]">
+        <div role="tablist" className="tabs tabs-bordered py-3 bg-base-200 h-[6dvh]">
             <a role="tab" className={`tab ${tab === 1 && 'tab-active'} pb-2`} onClick={() => setTab(1)}>Friends</a>
             <a role="tab" className={`tab ${tab === 2 && 'tab-active'} pb-2`} onClick={() => setTab(2)}>Requests sent</a>
             <a role="tab" className={`tab ${tab === 3 && 'tab-active'} pb-2`} onClick={() => setTab(3)}>Requests recieved</a>
         </div>
 
         {loading 
-          ? <div className="h-[74vh] flex justify-center items-center">
+          ? <div className="h-[74dvh] flex justify-center items-center">
               <span className="loading loading-ring loading-md me-3"></span>
               <p>Loading...</p>
             </div>
           : friends.length === 0 
-            ? <div className="h-[74vh] flex justify-center items-center">
+            ? <div className="h-[74dvh] flex justify-center items-center">
                 <p>
                   {tab === 1 ? "Well, it seems like you are an introvert huh? 👀" : "No requests found"}
                 </p>

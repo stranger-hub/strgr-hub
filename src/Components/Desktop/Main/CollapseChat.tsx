@@ -1,4 +1,5 @@
 "use client";
+import useWindowSize from "@/hooks/useWindowSize";
 import { User } from "@prisma/client";
 import { RtmChannel } from "agora-rtm-sdk";
 import EmojiPicker, { Theme } from "emoji-picker-react";
@@ -14,7 +15,7 @@ function ChatHeader({
   themUser: User
 }) {
   return (
-    <div className="bg-base-200 p-3 flex items-center gap-4 h-[8vh]">
+    <div className="bg-base-200 p-3 flex items-center gap-4 h-[8dvh]">
       <div className="avatar online placeholder">
         {/* use class placeholder when DP not available */}
         <div className="bg-base-100 text-neutral-content w-10 rounded-full capitalize">
@@ -30,7 +31,7 @@ function ChatHeader({
         </div>
       </div>
       <p className="text-sm">{themUser?.name}</p>
-      {themUser.countryCode && <Image
+      {themUser?.countryCode && <Image
         alt="United States"
         src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${themUser.countryCode}.svg`}
         width={18}
@@ -47,8 +48,9 @@ function Chat({
   userId: string;
   messages: { userId: string; message: string }[];
 }) {
+  const {width} = useWindowSize();
   return (
-    <div className="text-xs h-[64vh] overflow-auto">
+    <div className={`text-xs ${width > 1000 ? "h-[64dvh]" : "h-[49dvh]"} overflow-auto`}>
       {/* incoming chats */}
       {messages.map((message, index) =>
         userId !== message.userId ? (
@@ -90,7 +92,7 @@ function ChatInput({
   }
 
   return (
-    <form className="h-[8vh] bg-base-200 flex items-center gap-5" onSubmit={handleMessageSubmit}>
+    <form className="h-[8dvh] bg-base-200 flex items-center gap-5" onSubmit={handleMessageSubmit}>
       <input
         type="text"
         className="input input-sm w-[80%] rounded text-sm"
@@ -137,6 +139,7 @@ export default function CollapseChat({
   themUser: User | null
 }) {
   const session = useSession();
+  const {width} = useWindowSize();
   const userId = session.data?.user?.id as string;
 
   async function handleMessageSend(text: string) {
@@ -165,12 +168,12 @@ export default function CollapseChat({
   }
 
   return (
-    <div className="w-[100%]">
+    <div className={`w-[100%] ${width < 1000 && "px-3"}`}>
       {themUser ?
         <>
           <ChatHeader themUser={themUser} />
           {messages.length === 0 ? 
-            <div className="h-[64vh] flex justify-center items-center">
+            <div className={`${width > 1000 ? "h-[64dvh]" : "h-[49dvh]"} flex justify-center items-center`}>
               <p>Echo... echo... 📡</p>
             </div> :
             <Chat userId={userId} messages={messages} />
@@ -179,7 +182,7 @@ export default function CollapseChat({
             handleMessageSend={handleMessageSend}
           />
         </> :
-        <div className="bg-base-200 h-[80vh] flex justify-center items-center gap-2">
+        <div className={`bg-base-200 ${width > 1000 ? "h-[80dvh]" : "h-[50vh]"} flex justify-center items-center gap-2`}>
           <span className="loading loading-ring loading-md"></span>
           <p>Waiting for someone to join...</p>
         </div>

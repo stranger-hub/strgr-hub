@@ -34,7 +34,7 @@ export default function CountriesDropdown() {
         </div>
         <ul
           tabIndex={0}
-          className="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-[200px] h-[60vh] overflow-auto flex-nowrap"
+          className="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-[200px] h-[60dvh] overflow-auto flex-nowrap"
         >
           {Object.entries(countries).map(([countryCode, countryInfo]) => (
             <li key={countryCode}>

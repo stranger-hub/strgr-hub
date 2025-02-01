@@ -8,6 +8,7 @@ import {
     MediaPermissionsErrorType,
     requestMediaPermissions
 } from 'mic-check';
+import { SocketProvider } from "@/app/context/socketContextStore";
 
 export default function MainWrapper() {
     const [permissionsGranted, setPermissionsGranted] = useState(false);
@@ -43,7 +44,7 @@ export default function MainWrapper() {
     };
 
     return openMain ? (
-        <Main />
+        <SocketProvider><Main /></SocketProvider>
     ) : (
         <Welcome errorMsg={errorMsg} loading={loading} onRequestPermissions={checkPermissions} permissionsGranted={permissionsGranted} />
     );

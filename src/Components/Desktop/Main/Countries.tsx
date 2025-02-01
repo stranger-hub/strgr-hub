@@ -5,7 +5,7 @@ import CountriesDropdown from "../../Common/CountriesDropdown";
 
 export default function Countries() {
   return (
-    <div className="flex justify-between gap-14 items-center h-[10vh]">
+    <div className="flex justify-between gap-14 items-center h-[10dvh]">
       <div className="w-[75%]">
         <CountriesCarousel />
       </div>

@@ -14,9 +14,9 @@ export default function AuthWrapper({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex gap-5">
+        <div className="flex gap-5 mx-3">
             <Logo rotate={false} />
-            <div className="bg-base-200 p-10 rounded-lg text-center">
+            <div className="bg-base-200 p-8 md:p-10 rounded-lg text-center">
                 <h2 className="font-bold text-2xl">
                     {register ? "REGISTER" : "LOGIN"}
                 </h2>
@@ -79,7 +79,7 @@ function Providers({ isPending }: { isPending: boolean }) {
 
 function Logo({ rotate }: { rotate: boolean }) {
     return (
-        <div className={`h-100 ${rotate && "flex items-end"}`}>
+        <div className={`h-100 hidden md:inline ${rotate && "flex items-end"}`}>
             <Image
                 src={rotate ? "/logoVertical2.png" : "/logoVertical.png"}
                 alt="logo"
