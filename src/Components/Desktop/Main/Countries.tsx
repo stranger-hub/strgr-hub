@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
 import CountriesCarousel from "./CountriesCarousel";
-import CountriesDropdown from "../Common/CountriesDropdown";
+import CountriesDropdown from "../../Common/CountriesDropdown";
 
 export default function Countries() {
   return (
-    <div className="flex justify-between gap-14 items-center my-5">
+    <div className="flex justify-between gap-14 items-center h-[10dvh]">
       <div className="w-[75%]">
         <CountriesCarousel />
       </div>

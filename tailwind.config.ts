@@ -7,6 +7,7 @@ const config: Config = {
       {
         mytheme: {
           primary: "#E84644",
+          secondary: "#111111",
           "base-200": "#111111",
           "base-100": "#292929",
           success: "#24B833",

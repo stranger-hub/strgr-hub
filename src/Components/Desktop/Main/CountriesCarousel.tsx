@@ -52,7 +52,10 @@ export default function CountriesCarousel() {
           <div>
             {Object.entries(countries).map(([countryCode, countryInfo]) => (
               <SwiperSlide key={countryCode}>
-                <div className="flex items-center gap-5 btn btn-ghost p-0 font-normal">
+                <div
+                  className="flex items-center gap-5 btn btn-ghost p-0 font-normal"
+                  title={countryInfo.name}
+                >
                   <div className="text-center">
                     <BsGenderFemale color="white" size={20} />
                     <p className="mt-1">20</p>
