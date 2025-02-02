@@ -8,7 +8,7 @@ const Navbar = async () => {
   // const location = await (await fetch('https://ipapi.co/json/')).json();
   
   return (
-    <div className="navbar bg-base-200 h-[10dvh] px-[15px] lg:px-[60px] py-[20px]">
+    <div className="navbar bg-base-200 h-[10dvh] px-[10px] lg:px-[60px] py-[20px]">
       <div className="mx-auto w-[100%] max-w-[1400px] flex items-center justify-between">
       <Link href={"/"}>
         <Image src="/logo.png" alt="logo" width={200} height={200} />

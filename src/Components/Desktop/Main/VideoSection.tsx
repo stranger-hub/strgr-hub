@@ -115,7 +115,7 @@ export default function VideoSection({
       <ReportPopup report={report} />
       {width > 1000 && <MyVideoComponent width={width} open={open} myRef={myRef} />}
 
-      <div className={`relative order-1 bg-base-200 rounded-lg h-[70dvh] ${(!open && width > 1000) ? 'w-[49%]' : 'w-full'} z-[999]`}>
+      <div className={`relative order-1 bg-base-200 rounded-lg h-[75dvh] lg:h-[70dvh] ${(!open && width > 1000) ? 'w-[49%]' : 'w-full'} z-[999]`}>
         <div
           ref={themRef}
           className="rounded-lg"

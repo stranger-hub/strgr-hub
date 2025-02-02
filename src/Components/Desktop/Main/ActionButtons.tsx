@@ -2,13 +2,13 @@ import useWindowSize from "@/hooks/useWindowSize";
 import {
     BsCameraVideoFill,
     BsCameraVideoOffFill,
-    BsChatDotsFill,
     BsExclamationTriangleFill,
     BsFastForwardCircleFill,
     BsMicFill,
     BsMicMuteFill,
     BsPersonFillAdd,
 } from "react-icons/bs";
+import { FaComments } from 'react-icons/fa';
 
 export default function ActionButtons({ 
   isLoading, 
@@ -29,7 +29,7 @@ export default function ActionButtons({
           <BsFastForwardCircleFill size={20} />
         </button>
         {setOpenMobileChat && themUser && <ActionButton
-          icon={<BsChatDotsFill size={20} />}
+          icon={<FaComments size={20} />}
           disabled={isLoading}
           func={setOpenMobileChat}
           tooltipData={width > 1000 ? "open chat" : null}
