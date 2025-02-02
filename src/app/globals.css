@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  user-select: none;
+}
+
 /* Define scrollbar styles */
 ::-webkit-scrollbar {
   width: 5px; /* width of the scrollbar */
