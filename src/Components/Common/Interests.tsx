@@ -49,7 +49,7 @@ export default function Interests({
   };
 
   return (
-    <div className="max-w-[600px] flex justify-center flex-wrap gap-5">
+    <div className="max-w-[600px] flex justify-center flex-wrap gap-3 md:gap-5">
       {allInterests.map((interest, index) => (
         <div
           key={interest.interest}

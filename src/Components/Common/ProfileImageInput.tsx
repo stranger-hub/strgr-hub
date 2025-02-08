@@ -1,4 +1,5 @@
 "use client";
+import useWindowSize from "@/hooks/useWindowSize";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 import { BsImageFill } from "react-icons/bs";
@@ -6,6 +7,7 @@ import { BsImageFill } from "react-icons/bs";
 export default function ImageInput({ image }: { image: string | null | undefined }) {
   const [hovering, setHovering] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { width } = useWindowSize();
 
   const handleClick = () => {
     fileInputRef.current?.click();
@@ -13,7 +15,7 @@ export default function ImageInput({ image }: { image: string | null | undefined
 
   return (
     <div className="absolute w-full flex justify-center items-center gap-10 left-0 top-[-75px]">
-      <p className="text-2xl font-semibold text-primary">STRANGER?!</p>
+      {width > 700 && <p className="text-2xl font-semibold text-primary">STRANGER?!</p>}
       <div
         className="relative p-0 h-[150px] w-[150px] bg-base-100 rounded-full border border-primary cursor-pointer"
         onClick={handleClick}
@@ -29,7 +31,7 @@ export default function ImageInput({ image }: { image: string | null | undefined
         className="hidden"
         accept="image/*"
       />
-      <p className="text-2xl font-semibold text-primary">STRANGER?!</p>
+      {width > 700 && <p className="text-2xl font-semibold text-primary">STRANGER?!</p>}
     </div>
   );
 }
