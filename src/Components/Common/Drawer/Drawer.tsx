@@ -1,7 +1,9 @@
 'use client';
 import CollapseChat from '@/Components/Desktop/Main/CollapseChat';
+import FriendsTabList from '@/Components/Friends/FriendsTabList';
 import { User } from '@prisma/client';
 import { RtmChannel } from 'agora-rtm-sdk';
+import { useSession } from 'next-auth/react';
 import React, { MutableRefObject, useEffect, useRef } from 'react';
 import { BsChatDotsFill, BsPersonHeart } from 'react-icons/bs';
 
@@ -22,6 +24,8 @@ export default function Drawer({
 }) {
   const drawerRef = useRef<HTMLDivElement>(null);
   const [tab, setTab] = React.useState<number>(1);
+  const session = useSession();
+  const userId = session.data?.user?.id;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -48,7 +52,8 @@ export default function Drawer({
           <BsPersonHeart />
         </button>
       </div>
-      <CollapseChat messages={messages} channel={channel} setMessages={setMessages} themUser={themUser} />
+      {tab === 1 && <CollapseChat messages={messages} channel={channel} setMessages={setMessages} themUser={themUser} />}
+      {tab === 2 && <FriendsTabList userId={userId!} showFull={false} isMobile={true} />}
     </div>
   );
 }

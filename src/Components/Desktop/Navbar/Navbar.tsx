@@ -36,9 +36,15 @@ const Navbar = async () => {
           <li>
             <Link href={"/profile"} className="justify-between">
               Profile
+            </Link>
+          </li>
+          <li>
+            <Link href={"/friends"} className="justify-between">
+              Friends
               <span className="badge">New</span>
             </Link>
           </li>
+          <div className="divider my-1"></div>
           <li>
             <LogoutBtn />
           </li>

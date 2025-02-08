@@ -37,9 +37,9 @@ export default function CollapseComponent({
             <BsFillCaretRightFill />
           )}
         </button>
-        <button className={`${buttonCustomStyle} ${tab === 1 ? 'text-primary bg-base-100' : ''}`} onClick={() => { setTab(1); setIsOpen(true); }}>
+        {themUser && <button className={`${buttonCustomStyle} ${tab === 1 ? 'text-primary bg-base-100' : ''}`} onClick={() => { setTab(1); setIsOpen(true); }}>
           <BsChatDotsFill />
-        </button>
+        </button>}
         <button className={`${buttonCustomStyle} ${tab === 2 ? 'text-primary bg-base-100' : ''}`} onClick={() => { setTab(2); setIsOpen(true); }}>
           <BsPersonCheckFill />
         </button>
