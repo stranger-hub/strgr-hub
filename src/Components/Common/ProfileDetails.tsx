@@ -66,14 +66,14 @@ export default function ProfileDetails({ user }: { user: Profile }) {
   }
 
   return (
-    <div className="px-10 pb-5 text-center">
+    <div className="px-2 md:px-10 pb-3 md:pb-5 text-center">
       <Toaster />
       <div className={itemsClass}>
         <div className="text-2xl font-bold w-auto">
           <ProfileInput value={profile?.name} setValue={setValue} save={saveName} />
         </div>
       </div>
-      <div className="flex justify-center gap-10 items-center mt-5">
+      <div className="flex flex-col md:flex-row justify-center gap-5 md:gap-10 items-center mt-5">
         <div className={itemsClass}>
           <div className="flex items-center w-auto">
             <p className="font-medium mr-3">DOB: </p>
@@ -106,7 +106,7 @@ export default function ProfileDetails({ user }: { user: Profile }) {
           </div>
         </div>
       </div>
-      <div className="mt-14">
+      <div className="mt-10 md:mt-14">
         <p className="font-bold">
           Update your top <span className="text-primary">3 interests</span>
         </p>

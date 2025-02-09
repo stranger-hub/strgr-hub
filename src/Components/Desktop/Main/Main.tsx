@@ -26,7 +26,6 @@ export default function Main() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { width } = useWindowSize();
   const { socket } = useSocket();
-  // const initialized = useRef(false);
   // const router = useRouter();
   // const pathname = usePathname();
 
@@ -35,13 +34,6 @@ export default function Main() {
   const session = useSession();
   const userId = session.data?.user?.id;
   // const userId = (Math.random() * 1000).toString();
-
-  // useEffect(() => {
-  //   if (!initialized.current) {
-  //     initialized.current = true;
-  //     joinRoom();
-  //   }
-  // }, []);
 
   useEffect(() => {
     socket?.on('connect', () => {
@@ -114,7 +106,7 @@ export default function Main() {
   return (
     <>
       <Toaster />
-      <div className="relative overflow-y-hidden flex gap-10 mx-auto max-w-[1400px] h-[80dvh]">
+      <div className="relative overflow-y-hidden flex gap-10 mx-auto max-w-[1400px] h-[86dvh] lg:h-[80dvh]">
         {width <= 1000 && <Drawer open={openMobileChat} setOpen={setOpenMobileChat} messages={messages} channel={rtmChannelRef} setMessages={setMessages} themUser={themUser} />}
         <div className={`transition-all duration-200 w-[100%]`}>
           <VideoSection isLoading={isLoading} setOpenMobileChat={setOpenMobileChat} getRoom={joinRoom} myVideo={myVideo} themVideo={themVideo} open={open} themUser={themUser} />

@@ -25,11 +25,11 @@ export default function CollapseComponent({
 }) {
   const buttonCustomStyle = "p-2 hover:bg-base-100 rounded hover:text-primary transition duration-200 ease-in-out transform hover:scale-110";
 
-  const [tab, setTab] = React.useState<number>(1);
+  const [tab, setTab] = React.useState<number>(2);
 
   return (
     <div className={`transition-all duration-200 flex max-w-[40%] ${open ? 'w-[750px]' : 'w-[50px]'}`}>
-      <div className="bg-base-200 px-2 py-4 rounded-s-lg flex flex-col justify-between gap-10 w-[50px]">
+      <div className="bg-base-300 px-2 py-4 rounded-s-lg flex flex-col justify-between gap-10 w-[50px]">
         <button onClick={() => setIsOpen((prev: boolean) => !prev)} className={buttonCustomStyle}>
           {!open ? (
             <BsFillCaretLeftFill />
@@ -37,9 +37,9 @@ export default function CollapseComponent({
             <BsFillCaretRightFill />
           )}
         </button>
-        <button className={`${buttonCustomStyle} ${tab === 1 ? 'text-primary bg-base-100' : ''}`} onClick={() => { setTab(1); setIsOpen(true); }}>
+        {themUser && <button className={`${buttonCustomStyle} ${tab === 1 ? 'text-primary bg-base-100' : ''}`} onClick={() => { setTab(1); setIsOpen(true); }}>
           <BsChatDotsFill />
-        </button>
+        </button>}
         <button className={`${buttonCustomStyle} ${tab === 2 ? 'text-primary bg-base-100' : ''}`} onClick={() => { setTab(2); setIsOpen(true); }}>
           <BsPersonCheckFill />
         </button>

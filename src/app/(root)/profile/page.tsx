@@ -9,8 +9,8 @@ export default async function Page() {
   const user: any = await getUserById(userId);
 
   return (
-    <main className="flex flex-col justify-center items-center">
-      <div className="relative w-[900px] bg-base-200 mt-[100px] rounded-lg border border-primary ">
+    <main className="flex flex-col justify-center items-center px-[10px] lg:px-[60px] py-[2dvh] lg:py-[5dvh]">
+      <div className="relative max-w-[900px] bg-base-200 mt-[80px] rounded-lg border border-primary ">
         <ImageInput image={user?.image} />
         <div className="mt-[85px] mb-[40px]">
           <ProfileDetails user={user} />
