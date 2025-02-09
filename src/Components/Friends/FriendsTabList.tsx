@@ -44,7 +44,7 @@ export default function FriendsTabList({ userId, showFull, isMobile }: { userId:
           <a role="tab" className={`tab ${tab === 1 && 'tab-active'} pb-2`} onClick={() => setTab(1)}>Friends</a>
           <a role="tab" className={`tab ${tab === 2 && 'tab-active'} pb-2`} onClick={() => setTab(2)}>Requests sent</a>
           <a role="tab" className={`tab ${tab === 3 && 'tab-active'} pb-2`} onClick={() => setTab(3)}>Requests recieved</a>
-      </div> : <p className='flex items-center h-[8dvh] text-lg font-semibold p-4 pt-7 md:pt-5 '>Connect with friends</p>}
+      </div> : <p className='flex items-center h-[8dvh] text-lg font-semibold p-4 pt-7 md:pt-5 bg-base-300'>Connect with friends</p>}
       {loading 
         ? <div className={`${loaderHeight} flex justify-center items-center`}>
             <span className="loading loading-ring loading-md me-3"></span>

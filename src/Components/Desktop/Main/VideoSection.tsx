@@ -28,6 +28,7 @@ export default function VideoSection({
   const [trackState, setTrackState] = useState({ video: true, audio: true });
   const [requestLoading, setRequestLoading] = useState(false);
   const [reporting, setReporting] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   const { width } = useWindowSize();
   const myRef = useRef(null);
   const themRef = useRef(null);
@@ -110,8 +111,16 @@ export default function VideoSection({
     setReporting(false);
   }
 
+  const connectFirstTime = async () => {
+    await getRoom();
+    setInitialized(true);
+  }
+
   return (
     <div className={`relative ${!open && 'flex justify-center items-center flex-wrap gap-[2%]'}`}>
+      {!initialized && <div className="h-full w-full bg-opacity-70 bg-base-200 absolute flex justify-center items-center z-[999999] rounded-lg">
+        <button className="btn btn-primary rounded-lg" onClick={connectFirstTime} disabled={isLoading}>Connect with strangers</button>  
+      </div>}
       <ReportPopup report={report} />
       {width > 1000 && <MyVideoComponent width={width} open={open} myRef={myRef} />}
 
@@ -126,7 +135,7 @@ export default function VideoSection({
             overflow: "hidden",
           }}
         ></div>
-        {!themUser && (
+        {!themUser && initialized && (
           <div className={`absolute top-0 h-[70dvh] w-full left-0 flex justify-center items-center z-[10]`}>
             <span className="loading loading-ring loading-md me-2"></span>
             <p>Waiting...</p>

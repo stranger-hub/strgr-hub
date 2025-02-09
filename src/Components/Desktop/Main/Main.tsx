@@ -26,7 +26,6 @@ export default function Main() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { width } = useWindowSize();
   const { socket } = useSocket();
-  // const initialized = useRef(false);
   // const router = useRouter();
   // const pathname = usePathname();
 
@@ -35,13 +34,6 @@ export default function Main() {
   const session = useSession();
   const userId = session.data?.user?.id;
   // const userId = (Math.random() * 1000).toString();
-
-  // useEffect(() => {
-  //   if (!initialized.current) {
-  //     initialized.current = true;
-  //     joinRoom();
-  //   }
-  // }, []);
 
   useEffect(() => {
     socket?.on('connect', () => {

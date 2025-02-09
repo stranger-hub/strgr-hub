@@ -15,7 +15,7 @@ function ChatHeader({
   themUser: User
 }) {
   return (
-    <div className="bg-base-200 lg:p-3 flex items-center gap-4 h-[8dvh]">
+    <div className="bg-base-300 lg:p-3 flex items-center gap-4 h-[8dvh]">
       <div className="avatar online placeholder">
         {/* use class placeholder when DP not available */}
         <div className="bg-base-100 text-neutral-content w-10 rounded-full capitalize">
@@ -50,7 +50,7 @@ function Chat({
 }) {
   const {width} = useWindowSize();
   return (
-    <div className={`text-xs bg-base-300 ${width > 1000 ? "h-[64dvh]" : "h-[49dvh]"} overflow-auto`}>
+    <div className={`text-xs bg-base-200 ${width > 1000 ? "h-[64dvh]" : "h-[49dvh]"} overflow-auto`}>
       {/* incoming chats */}
       {messages.map((message, index) =>
         userId !== message.userId ? (
@@ -92,7 +92,7 @@ function ChatInput({
   }
 
   return (
-    <form className="h-[8dvh] bg-base-200 flex items-center gap-5" onSubmit={handleMessageSubmit}>
+    <form className="h-[8dvh] bg-base-300 flex items-center gap-5" onSubmit={handleMessageSubmit}>
       <input
         type="text"
         className="input input-sm w-[80%] rounded text-sm"
