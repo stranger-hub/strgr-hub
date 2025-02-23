@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export default function ReportPopup({ report }: { report: (message: string) => void }) {
     const [message, setMessage] = useState("")
     return (
-        <dialog id="my_modal_2" className="modal">
+        <dialog id="report_modal" className="modal">
             <div className="modal-box w-11/12 max-w-5xl">
                 <h3 className="font-semibold text-lg">Please describe your issue here</h3>
                 <textarea 

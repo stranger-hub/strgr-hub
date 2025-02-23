@@ -12,8 +12,8 @@ import { Room, User } from "@prisma/client";
 import useWindowSize from "@/hooks/useWindowSize";
 import Drawer from "@/Components/Common/Drawer/Drawer";
 import { useSocket } from "@/app/context/socketContextStore";
-// import { useRouter, usePathname } from "next/navigation";
-// import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import PageExitAlert from "@/Components/Common/Alert/PageExitAlert";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Main() {
   const [open, setIsOpen] = useState(true);
@@ -24,16 +24,19 @@ export default function Main() {
   const [myVideo, setMyVideo] = useState<ICameraVideoTrack>();
   const [themUser, setThemUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [urlToRoute, setUrlToRoute] = useState<string>("");
   const { width } = useWindowSize();
   const { socket } = useSocket();
-  // const router = useRouter();
-  // const pathname = usePathname();
 
   const rtmChannelRef = useRef<RtmChannel>();
 
   const session = useSession();
   const userId = session.data?.user?.id;
+  const router = useRouter();
+  const pathname = usePathname();
+  const originalPushRef = useRef(router.push);
   // const userId = (Math.random() * 1000).toString();
+
 
   useEffect(() => {
     socket?.on('connect', () => {
@@ -52,6 +55,45 @@ export default function Main() {
       socket?.off('userDisconnected');
     };
   }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: any) => {
+      if (themUser) {
+        event.preventDefault();
+        event.returnValue = "You are in a chatting session, are you sure you want to leave?";
+      }
+    };
+
+    const handleRouteChange = (url: string) => {
+      if (url === pathname || !themUser) {
+        return;
+      }
+      setUrlToRoute(url);
+      (document.getElementById('alert_modal') as any).showModal();
+      throw 'Route change aborted.';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    const originalPush = router.push;
+    const originalReplace = router.replace;
+
+    router.push = (url, ...args) => {
+      handleRouteChange(url);
+      return originalPush(url, ...args);
+    };
+
+    router.replace = (url, ...args) => {
+      handleRouteChange(url);
+      return originalReplace(url, ...args);
+    };
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      router.push = originalPush;
+      router.replace = originalReplace;
+    };
+  }, [themUser, router]);
 
   const joinRoom = async () => {
     setIsLoading(true);
@@ -106,6 +148,7 @@ export default function Main() {
   return (
     <>
       <Toaster />
+      <PageExitAlert url={urlToRoute} openUrl={originalPushRef} />
       <div className="relative overflow-y-hidden flex gap-10 mx-auto max-w-[1400px] h-[86dvh] lg:h-[80dvh]">
         {width <= 1000 && <Drawer open={openMobileChat} setOpen={setOpenMobileChat} messages={messages} channel={rtmChannelRef} setMessages={setMessages} themUser={themUser} />}
         <div className={`transition-all duration-200 w-[100%]`}>

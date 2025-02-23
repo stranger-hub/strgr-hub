@@ -23,7 +23,7 @@ export default function Drawer({
   themUser: User | null;
 }) {
   const drawerRef = useRef<HTMLDivElement>(null);
-  const [tab, setTab] = React.useState<number>(1);
+  const [tab, setTab] = React.useState<number>(themUser ? 1 : 2);
   const session = useSession();
   const userId = session.data?.user?.id;
 
@@ -42,7 +42,7 @@ export default function Drawer({
 
   return (
     <div ref={drawerRef} className={`w-full bg-secondary h-[71dvh] transition-all duration-200 absolute ${open ? "bottom-0" : "bottom-[-71dvh]"} left-0 z-[999999] border border-primary border-b-0 rounded-t-lg`}>
-      <div className="join flex justify-center h-[6dvh] rounded-b-none rounded-t-lg">
+      {themUser && <div className="join flex justify-center h-[6dvh] rounded-b-none rounded-t-lg">
         <button className={`btn ${tab === 1 ? "btn-primary" : "btn-ghost"} w-[50%] join-item`} onClick={() => setTab(1)}>
           CHAT
           <BsChatDotsFill />
@@ -51,7 +51,7 @@ export default function Drawer({
           FRIENDS
           <BsPersonHeart />
         </button>
-      </div>
+      </div>}
       {tab === 1 && <CollapseChat messages={messages} channel={channel} setMessages={setMessages} themUser={themUser} />}
       {tab === 2 && <FriendsTabList userId={userId!} showFull={false} isMobile={true} />}
     </div>
