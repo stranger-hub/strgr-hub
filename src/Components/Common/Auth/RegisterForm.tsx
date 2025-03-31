@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from "zod";
@@ -97,7 +97,9 @@ export default function RegisterForm({ isPending, startTransition }: { isPending
             </div>
 
             <div className="col-span-2">
-                <FormToast {...feedback} />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <FormToast {...feedback} />
+                </Suspense>
             </div>
             <button type="submit" className="col-span-2 btn btn-primary text-white">Register</button>
         </form>
