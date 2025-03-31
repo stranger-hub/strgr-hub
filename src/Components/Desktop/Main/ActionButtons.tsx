@@ -7,6 +7,7 @@ import {
     BsMicFill,
     BsMicMuteFill,
     BsPersonFillAdd,
+    BsPersonHearts,
 } from "react-icons/bs";
 import { FaComments } from 'react-icons/fa';
 
@@ -28,13 +29,12 @@ export default function ActionButtons({
           <p>SKIP</p>
           <BsFastForwardCircleFill size={20} />
         </button>
-        {setOpenMobileChat && themUser && <ActionButton
-          icon={<FaComments size={20} />}
-          disabled={isLoading}
+        {setOpenMobileChat && <ActionButton
+          icon={themUser ? <FaComments size={20} /> : <BsPersonHearts size={20} />}
           func={setOpenMobileChat}
           tooltipData={width > 1000 ? "open chat" : null}
         />}
-        <ActionButton
+        {false && <><ActionButton
           icon={
             trackState.video ? (
               <BsCameraVideoFill size={20} />
@@ -42,7 +42,6 @@ export default function ActionButtons({
               <BsCameraVideoOffFill size={20} />
             )
           }
-          disabled={isLoading}
           func={() => mute("video")}
           tooltipData={width > 1000 ? "open/close camera" : null}
         />
@@ -54,22 +53,21 @@ export default function ActionButtons({
               <BsMicMuteFill size={20} />
             )
           }
-          disabled={isLoading}
           func={() => mute("audio")}
           tooltipData={width > 1000 ? "open/close mic" : null}
-        />
-        <ActionButton
+        /></>}
+        {themUser && <><ActionButton
           icon={<BsPersonFillAdd size={20} />}
           func={addFriend}
           tooltipData={width > 1000 ? "add friend" : null}
-          disabled={!themUser || isLoading || requestLoading}
+          disabled={isLoading || requestLoading}
         />
         <ActionButton
           icon={<BsExclamationTriangleFill size={20} />}
-          func={() => (document.getElementById('my_modal_2') as any)?.showModal()}
+          func={() => (document.getElementById('report_modal') as any)?.showModal()}
           tooltipData={width > 1000 ? "report" : null}
-          disabled={!themUser || isLoading || reporting}
-        />
+          disabled={isLoading || reporting}
+        /></>}
     </div>
   );
 }

@@ -67,7 +67,7 @@ export default function VideoSection({
 
   const addFriend = async () => {
     setRequestLoading(true);
-    const response = await post(`/api/user/friends?senderId=${themUser?.id}&receiverId=${userId}`, {});
+    const response = await post(`/api/user/friends?senderId=${userId}&receiverId=${themUser?.id}`, {});
     if (response?.success) {
       toast.success("Request sent! 🥳", {
         style: {
@@ -118,7 +118,7 @@ export default function VideoSection({
 
   return (
     <div className={`relative ${!open && 'flex justify-center items-center flex-wrap gap-[2%]'}`}>
-      {!initialized && <div className="h-full w-full bg-opacity-70 bg-base-200 absolute flex justify-center items-center z-[999999] rounded-lg">
+      {!initialized && <div className={`${width < 1000 ? 'h-[75dvh]' : 'h-full'} w-full bg-opacity-70 bg-base-200 absolute flex justify-center items-center z-[999998] rounded-lg`}>
         <button className="btn btn-primary rounded-lg" onClick={connectFirstTime} disabled={isLoading}>Connect with strangers</button>  
       </div>}
       <ReportPopup report={report} />
@@ -144,7 +144,7 @@ export default function VideoSection({
         {width <= 1000 && <MyVideoComponent width={width} open={open} myRef={myRef} />}
       </div>
       <ActionButtons 
-        isLoading={isLoading}
+        isLoading={isLoading || !initialized}
         setOpenMobileChat={width < 1000 && setOpenMobileChat} 
         getRoom={getRoom} 
         trackState={trackState} 

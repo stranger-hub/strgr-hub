@@ -31,7 +31,7 @@ const Navbar = async () => {
         </div>
         <ul
           tabIndex={0}
-          className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 border border-primary z-[10000]"
+          className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 border border-primary z-[99999999]"
         >
           <li>
             <Link href={"/profile"} className="justify-between">
