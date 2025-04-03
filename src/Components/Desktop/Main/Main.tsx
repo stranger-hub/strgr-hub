@@ -108,19 +108,22 @@ export default function Main() {
         if (!roomResult) return;
         setRoom(roomResult);
 
-        const rtcToken = await agoraInstance.getRtcToken(roomResult.id, userId); // token
-        const rtmToken = await agoraInstance.getRtmToken(userId);
+        const [rtcToken, rtmToken] = await Promise.all([
+          agoraInstance.getRtcToken(roomResult.id, userId),
+          agoraInstance.getRtmToken(userId)
+        ]); // tokens
 
-        rtmChannelRef.current = await agoraInstance.connectToAgoraRtm(userId, roomResult.id, rtmToken, setMessages); // RTM
-
-        await agoraInstance.connectToAgoraRtc( //RTC
-          userId,
-          roomResult.id,
-          rtcToken,
-          (themVideo: IRemoteVideoTrack) => setThemVideo(themVideo),
-          (myVideo: ICameraVideoTrack) => setMyVideo(myVideo),
-          (themUser: any) => setThemUser(themUser),
-        );
+        [rtmChannelRef.current] = await Promise.all([
+          agoraInstance.connectToAgoraRtm(userId, roomResult.id, rtmToken, setMessages), // RTM
+          agoraInstance.connectToAgoraRtc( //RTC
+            userId,
+            roomResult.id,
+            rtcToken,
+            (themVideo: IRemoteVideoTrack) => setThemVideo(themVideo),
+            (myVideo: ICameraVideoTrack) => setMyVideo(myVideo),
+            (themUser: any) => setThemUser(themUser),
+          )
+        ]);
         socket?.emit('joinRoom', roomResult.id, userId);
       } else {
         toast.error("user not logged in properly, please re-login", {
