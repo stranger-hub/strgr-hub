@@ -36,7 +36,7 @@ export default function LoginForm({ isPending, startTransition }: { isPending: b
     };
 
     return (
-        <div className="grid grid-cols-1 gap-5 md:w-[30vw]">
+        <div className="grid grid-cols-1 gap-5 lg:w-[30vw]">
             
             <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-5">
                 <div className="col-span-1">
