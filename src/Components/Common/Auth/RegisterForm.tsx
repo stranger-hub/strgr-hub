@@ -15,7 +15,7 @@ export default function RegisterForm({ isPending, startTransition }: { isPending
             password: "",
             // dob: "",
             gender: "",
-            country: "",
+            // country: "",
         },
     });
 
@@ -38,8 +38,8 @@ export default function RegisterForm({ isPending, startTransition }: { isPending
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-5 w-[50vw]">
-            <div className="col-span-1">
+        <form onSubmit={handleSubmit(onSubmit)} className="grid lg:grid-cols-2 gap-5 lg:w-[50vw]">
+            <div className="col-span-2 lg:col-span-1">
                 <label className="input input-bordered input-md flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70">
                         <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
@@ -49,8 +49,8 @@ export default function RegisterForm({ isPending, startTransition }: { isPending
                 {errors.username && <ErrorMsg msg={errors.username.message} />}
             </div>
 
-            <div className="col-span-1">
-                <label className="input input-bordered input-md flex items-center gap-2 col-span-1">
+            <div className="col-span-2 lg:col-span-1">
+                <label className="input input-bordered input-md flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70">
                         <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
                         <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
@@ -60,8 +60,8 @@ export default function RegisterForm({ isPending, startTransition }: { isPending
                 {errors.email && <ErrorMsg msg={errors.email.message} />}
             </div>
 
-            <div className="col-span-1">
-                <label className="input input-bordered input-md flex items-center gap-2 col-span-1">
+            <div className="col-span-2 lg:col-span-1">
+                <label className="input input-bordered input-md flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70">
                         <path fillRule="evenodd" d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z" clipRule="evenodd" />
                     </svg>
@@ -77,8 +77,8 @@ export default function RegisterForm({ isPending, startTransition }: { isPending
                 {errors.dob && <ErrorMsg msg={errors.dob.message} />}
             </div> */}
 
-            <div className="col-span-1">
-                <select  disabled={isPending} className="select w-full input-bordered" {...register("gender")}>
+            <div className="col-span-2 lg:col-span-1">
+                <select  disabled={isPending} className="select w-full flex-grow input-bordered" {...register("gender")}>
                     <option disabled selected value="">Select Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -87,14 +87,14 @@ export default function RegisterForm({ isPending, startTransition }: { isPending
                 {errors.gender && <ErrorMsg msg={errors.gender.message} />}
             </div>
 
-            <div className="col-span-1">
+            {/* <div className="col-span-1">
                 <select disabled={isPending} className="select w-full input-bordered" {...register("country")}>
                     <option disabled selected value="">Select Country</option>
                     <option value="country1">Country 1</option>
                     <option value="country2">Country 2</option>
                 </select>
                 {errors.country && <ErrorMsg msg={errors.country.message} />}
-            </div>
+            </div> */}
 
             <div className="col-span-2">
                 <Suspense fallback={<div>Loading...</div>}>
