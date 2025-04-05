@@ -1,5 +1,6 @@
 import { IAgoraRTCClient, ICameraVideoTrack, IMicrophoneAudioTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
 import { get } from "./api";
+import { leaveRoom } from "./room";
 
 const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID!;
 const appCertificate = process.env.NEXT_PUBLIC_AGORA_APP_CERT!;
@@ -56,19 +57,12 @@ class Agora {
     return token;
   }
 
-  async leaveRoom() {
+  async leaveRoom(previousRoomId: string) {
     if (this.rtcClient) {
       await this.rtcClient.leave();
-      this.rtcClient.removeAllListeners();
-      this.rtcClient = undefined;
+      this.rtcListenersInitialized = false;
     }
-    if (this.tracks) {
-      this.tracks.forEach(track => {
-        track.stop();
-        track.close();
-      });
-      this.tracks = undefined;
-    }
+    await leaveRoom(previousRoomId);
   }
 
   async connectToAgoraRtm(
@@ -124,7 +118,6 @@ class Agora {
       );
 
       client.on("user-published", async (themUser, mediaType) => {
-        console.log("User published:", themUser.uid);
         await client.subscribe(themUser, mediaType);
         if (mediaType === "video" && themUser.videoTrack) {
           onVideoConnect(themUser.videoTrack);

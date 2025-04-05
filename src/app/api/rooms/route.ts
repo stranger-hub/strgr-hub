@@ -13,11 +13,17 @@ async function updateRoomStatus(id: string, status: RoomStatus) {
     });
 }
 
-async function getRoom() {
+async function getRoom(prevRoomId: string | undefined) {
+    const findQuery = prevRoomId ? {
+        status: RoomStatus.WAITING,
+        id: {
+            not: prevRoomId,
+        }
+    } : {
+        status: RoomStatus.WAITING,
+    };
     const rooms = await db.room.findMany({
-        where: {
-            status: 'WAITING',
-        },
+        where: findQuery,
         take: 5,
     });
     if (rooms.length > 0) {
@@ -57,9 +63,11 @@ async function deleteRoomById(roomId: string) {
     });
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
-        const { room, isCreated } = await getRoom();
+        const { searchParams } = new URL(request.url);
+        const prevRoomId = searchParams.get('prevRoomId') as string;
+        const { room, isCreated } = await getRoom(prevRoomId);
         if(!isCreated) await updateRoomStatus(room.id, 'CHATTING');
 
         return NextResponse.json({
