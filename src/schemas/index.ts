@@ -11,5 +11,5 @@ export const RegisterSchema = z.object({
     password: z.string().min(6, "Password must be at least 6 characters long"),
     // dob: z.string().min(1, "Date of birth is required"),
     gender: z.string().min(1, "Gender is required"),
-    country: z.string().min(1, "Country is required"),
+    // country: z.string().min(1, "Country is required"),
 });

@@ -14,7 +14,7 @@ export default function AuthWrapper({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex gap-5 mx-3">
+        <div className="flex gap-5 mx-3 my-5">
             <Logo rotate={false} />
             <div className="bg-base-200 p-8 md:p-10 rounded-lg text-center">
                 <h2 className="font-bold text-2xl">

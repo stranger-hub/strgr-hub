@@ -5,7 +5,7 @@ import VideoSection from "./VideoSection";
 import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import agoraInstance from "@/lib/agora";
-import { getRoom, leaveRoom } from "@/lib/room";
+import { getRoom } from "@/lib/room";
 import { RtmChannel } from "agora-rtm-sdk";
 import { ICameraVideoTrack, IRemoteVideoTrack } from "agora-rtc-sdk-ng";
 import { Room, User } from "@prisma/client";
@@ -102,9 +102,10 @@ export default function Main() {
     try {
       if (userId) {
         if(room?.id)  {
-          await leaveRoom(room.id); // leave room if already joined one
+          await agoraInstance.leaveRoom(room.id); // leave room if already joined one
+          socket?.emit('leaveRoom', room.id, userId);
         }
-        const roomResult = await getRoom(); // get room
+        const roomResult = await getRoom(room?.id); // get room
         if (!roomResult) return;
         setRoom(roomResult);
 
@@ -143,8 +144,9 @@ export default function Main() {
         },
         id: 'room-join'
       });
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }
 
 
