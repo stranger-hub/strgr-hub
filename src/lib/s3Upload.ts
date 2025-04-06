@@ -1,24 +1,24 @@
-import AWS from 'aws-sdk';
+import { put } from "./api";
 
-const s3 = new AWS.S3({
-  accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
-  region: process.env.NEXT_PUBLIC_AWS_REGION,
-});
+export const uploadToS3 = async (file: File, userId: string) => {
+    const base64Data = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
 
-export const uploadToS3 = async (file: File, userId: string): Promise<string | null> => {
-  try {
-    const params = {
-      Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
-      Key: `pfp/${userId}/profie_pic`,
-      Body: file,
-      ContentType: file.type,
-    };
-  
-    const data = await s3.upload(params).promise();
-    return data.Location;
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
+    const response = await put('/api/s3', { 
+        file: {
+            data: base64Data.split(',')[1], // Remove the data URL prefix
+            type: file.type,
+        },
+        userId 
+    });
+
+    if (!response.success) {
+        throw new Error(response.error || 'Failed to upload image');
+    }
+
+    return response.location;
 };

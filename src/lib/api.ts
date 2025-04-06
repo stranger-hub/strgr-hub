@@ -29,7 +29,7 @@ export const put = async (url: string, body: any) => {
     try {
         const response = await fetch(url, {
             method: "PUT",
-            body
+            body: JSON.stringify(body)
         });
         return await response.json();
     } catch (e: any) {

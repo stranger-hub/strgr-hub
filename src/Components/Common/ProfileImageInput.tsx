@@ -75,7 +75,7 @@ export default function ImageInput({ user }: {
         }
       } catch (error) {
         console.error("Error processing image:", error);
-        toast.error("Failed to process the image. Please try again.", {
+        toast.error((error instanceof Error ? error.message : "Failed to process the image. Please try again."), {
           style: {
             background: '#333',
             color: '#fff',
