@@ -6,20 +6,19 @@ const s3 = new AWS.S3({
   region: process.env.NEXT_PUBLIC_AWS_REGION,
 });
 
-export const uploadToS3 = async (file: File, userId: string): Promise<string> => {
+export const uploadToS3 = async (file: File, userId: string): Promise<string | null> => {
   try {
     const params = {
       Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME!,
-      Key: `${userId}/${file.name}`,
+      Key: `pfp/${userId}/profie_pic`,
       Body: file,
       ContentType: file.type,
-      ACL: 'public-read',
     };
   
     const data = await s3.upload(params).promise();
     return data.Location;
   } catch (e) {
     console.error(e);
-    return '';
+    return null;
   }
 };
