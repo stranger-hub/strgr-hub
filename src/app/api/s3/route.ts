@@ -2,9 +2,9 @@ import AWS from 'aws-sdk';
 import { NextRequest, NextResponse } from 'next/server';
 
 const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
+    accessKeyId: process.env.BUCKET_ACCESS_KEY_ID,
+    secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY,
+    region: process.env.BUCKET_REGION,
 });
 
 export async function PUT(request: NextRequest) {
@@ -20,7 +20,7 @@ export async function PUT(request: NextRequest) {
         const buffer = Buffer.from(file.data, 'base64');
         
         const params = {
-            Bucket: process.env.AWS_BUCKET_NAME!,
+            Bucket: process.env.BUCKET_BUCKET_NAME!,
             Key: `pfp/${userId}/profie_pic`,
             Body: buffer,
             ContentType: file.type,
